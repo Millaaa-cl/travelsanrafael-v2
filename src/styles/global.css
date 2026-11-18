@@ -490,7 +490,7 @@ p { margin: 0 0 1em; }
 .booking__child { flex-basis: 100%; margin: 4px 0 0; padding: 8px 12px; border-radius: var(--radius-sm); background: var(--ice); font-size: .9rem; display: flex; justify-content: space-between; gap: 8px; }
 .booking__child strong { font-size: 1.05rem; }
 /* Aviso destacado: el precio no incluye transporte (pedido del cliente) */
-.booking__notice { flex-basis: 100%; margin: 6px 0 0; padding: 10px 12px; border-radius: var(--radius-sm); background: #fdecec; color: var(--red-dark); font-size: .88rem; font-weight: 700; line-height: 1.4; display: flex; gap: 8px; align-items: flex-start; }
+.booking__notice { flex-basis: 100%; margin: 6px 0 0; padding: 10px 12px; border-radius: var(--radius-sm); background: #e8f1fc; color: #1d4f91; border: 1px solid #c5daf5; font-size: .88rem; font-weight: 700; line-height: 1.4; display: flex; gap: 8px; align-items: flex-start; }
 .booking__notice svg { width: 18px; height: 18px; flex: 0 0 auto; margin-top: 1px; }
 .booking h3 { display: flex; align-items: center; gap: 10px; font-size: 1rem; margin: 22px 0 12px; }
 .booking h3 .n { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: var(--ink); color: #fff; font-size: .8rem; font-weight: 800; }

@@ -4,8 +4,22 @@
 
 > **Esta carpeta es la versión 2** (`C:\Users\holam\travelsanrafael-v2`): las reservas se envían por WhatsApp, sin Flow ni backend. La versión 1 con Flow sigue en `C:\Users\holam\travelsanrafael`. El historial de abajo es compartido hasta la sección "Versión 2".
 
-## 18 de noviembre: versión 2, reservas por WhatsApp
+## 18 de noviembre (tarde): v2 publicada en travelsanrafael.cl
 
+**El sitio v2 está en línea en https://travelsanrafael.cl** y reemplazó al WordPress. El usuario respaldó el WordPress y vació la carpeta `public_html/travelsanrafael`.
+
+### En la v1 (antes de crear la v2)
+- **Widget de reserva en el inicio** (ES/EN):
+  - texto y collage a la izquierda, widget fijo a la derecha; en móvil, texto, luego widget y luego collage;
+  - los botones "Reservar" del inicio bajan a `#reservar`.
+- **Calendario:**
+  - leyenda de colores;
+  - en móvil, el número de cupos se lee mejor;
+  - mes y fecha con mayúscula inicial.
+- **Barra móvil "Reservar":** se oculta mientras el widget está en pantalla.
+- Commit `48a5562` en `costacarreratravel`.
+
+### Versión 2: reservas por WhatsApp
 - **Qué se hizo:** se clonó el proyecto en una carpeta aparte, con su propio repositorio: github.com/Millaaa-cl/travelsanrafael-v2.
 - **Widget:**
   - el calendario genera las fechas en el navegador desde `tour.booking` (temporada septiembre a abril, todos los días, desde mañana, 12 meses);
@@ -21,10 +35,38 @@
   - `llms.txt`;
   - términos (la reserva se confirma por WhatsApp y con el pago acordado).
 - **Verificado:** build y auditoría sin advertencias (23 páginas). Con Edge vía CDP, en escritorio (home ES) y en móvil (tour EN), el calendario muestra los días, 2 adultos + 1 niño suman $460.000, el mensaje de WhatsApp sale completo y no hay desborde horizontal.
-- **Publicación automática (18-11):** GitHub Actions (`.github/workflows/deploy.yml`) publica por FTPS en la carpeta de travelsanrafael.cl en cada push a `main`. La primera publicación salió bien: el sitio nuevo reemplazó al WordPress (respaldado por el usuario). Error encontrado: `421 Home directory not available`, porque cPanel había agregado `/deploy` al directorio de la cuenta FTP.
-- **Pendiente v2:**
-  - confirmar la temporada y los días con salida;
-  - definir cómo se paga tras confirmar por chat.
+
+### Correcciones de contenido (v2)
+- **"Alfajores artesanales" ahora dice "snack"** en "Incluye", el itinerario y la FAQ de comidas.
+- **El precio se muestra como sin transporte:**
+  - "por adulto, sin transporte" en el hero, la franja de datos clave y la barra móvil;
+  - en la ficha, filas "(sin transporte)" y una fila nueva, "Transporte";
+  - "Traslados" pasó a "No incluye" como opcional con costo adicional;
+  - FAQ nueva: "¿El precio incluye transporte?";
+  - el paso de las 06:20 dice "Si agregaste el transporte…";
+  - también se ajustaron las meta descriptions, el blog "Qué llevar" y `llms.txt`.
+- **Widget:**
+  - aviso azul informativo (`.booking__notice`, `#e8f1fc` / `#1d4f91`) que dice que el valor no incluye transporte;
+  - casilla "Necesito transporte…", que agrega la línea al mensaje de WhatsApp;
+  - total "(sin transporte)".
+
+### Publicación automática
+- **GitHub Actions** (`.github/workflows/deploy.yml`): en cada push a `main` hace `npm ci`, luego `npm run audit` y sube por **FTPS** (`SamKirkland/FTP-Deploy-Action`) solo los archivos que cambiaron.
+- **Secretos:** `FTP_SERVER`, `FTP_USERNAME` y `FTP_PASSWORD` en GitHub, con la cuenta FTP `deploy@travelsanrafael.cl` limitada a la carpeta del sitio.
+- **Errores resueltos:**
+  - `421 Home directory not available`: cPanel había agregado `/deploy` al directorio de la cuenta FTP. Se recreó la cuenta con el directorio correcto.
+  - Mientras tanto, el sitio estuvo unos minutos mostrando "Index of /" con la carpeta vacía.
+- **Verificado en vivo:**
+  - inicio, `/en/`, ficha del tour, `llms.txt`, sitemap, `robots.txt` e imágenes (200);
+  - 404 propio;
+  - `http`→`https` y `www`→dominio;
+  - la 301 de `/itinerario`;
+  - widget en móvil: días disponibles, total de $460.000 y mensaje de WhatsApp.
+
+### Documentos entregados
+- En el escritorio del usuario:
+  - `Resumen proyecto Costa Carrera Travel.txt`: resumen del proyecto, cómo hacer cambios desde Claude Code y pendientes;
+  - `Resumen front-end Costa Carrera Travel.txt`: skills, sistema de diseño, componentes, animaciones y recursos visuales.
 
 ## 17 de noviembre: sitio nuevo y rediseño
 
@@ -154,7 +196,12 @@ Commit `363e6d5`.
 | Fotos de WhatsApp reducidas a 1200 px (1600 px las de ancho completo) | Mismo tamaño que el resto del sitio, para que la página cargue rápido. |
 | Galería con 3n + 3 fotos (12, 15, 18, 21…) | Así la grilla queda completa en escritorio y en móvil. |
 | Zip con `tar -a` en vez de Compress-Archive | Compress-Archive usa `\` en las rutas y rompe la extracción en cPanel. |
-| `.gitignore` excluye `config.php` y `tsr-config.php` | Esos archivos guardan claves de la base y de Flow, y no deben ir a GitHub. |
+| `.gitignore` excluye `config.php` y `tsr-config.php` | Esos archivos guardan claves de la base y de Flow, y no deben ir a GitHub. (Solo aplica a la v1.) |
+| **v2 en carpeta y repo aparte**, sin backend | El cliente prefirió reservar por WhatsApp. La v1 con Flow queda intacta por si se retoma. |
+| Fechas del calendario configuradas en `tour.booking` | Sin base de datos no hay cupos reales: el operador confirma por chat y las fechas llenas se agregan a `closed`. |
+| Precio "sin transporte", con transporte opcional mediante una casilla | Pedido del cliente. El valor del transporte se cotiza por WhatsApp hasta que se defina. |
+| Publicación automática a producción en cada push a `main` | Pedido del cliente: sin zips. La auditoría SEO frena la publicación si hay advertencias. |
+| Cuenta FTP limitada a la carpeta del sitio | El hosting aloja varios sitios. El deploy no puede tocar los demás y solo borra lo que él mismo subió. |
 
 ## Pendiente
 
@@ -162,9 +209,11 @@ Commit `363e6d5`.
 - [x] Tarifas: $170.000 adulto y $120.000 niño hasta 12 años (18-11-2026).
 - [x] Logo transparente (18-11-2026).
 - [x] Foto del paso 2 del itinerario (puerto de embarque).
+- [ ] **Confirmar la temporada y los días con salida** (`tour.booking` en `tour.ts`). Hoy se ofrecen todos los días de septiembre a abril.
+- [ ] **Definir la forma de pago** después de confirmar por WhatsApp (transferencia, link de pago, efectivo).
+- [ ] **Definir el valor del transporte** para mostrarlo en lugar de "te lo cotizamos".
 - [ ] **Definir qué descuentos se ofrecen**, para responder cuando escriban por el cupón.
 - [ ] Confirmar si el sello **Confianza Turística (COVID-19)** sigue vigente. Si no, se quita del footer.
-- [ ] Confirmar la temporada de operación. Hoy dice "septiembre a abril".
 - [ ] Confirmar si se cobra la entrada a CONAF y si hay guía en inglés.
 - [ ] Foto del paso 1 del itinerario (salida en bus) y, si hay, del desayuno a bordo.
 - [ ] Coordenadas de la oficina, redes sociales y razón social.
@@ -172,7 +221,18 @@ Commit `363e6d5`.
 - [ ] Política de cancelación definitiva en *Términos*.
 - [ ] Opcional: logo en SVG vectorial real, y una versión en blanco para fondos oscuros.
 
-### Puesta en marcha (pasos detallados en README.md)
+### Puesta en marcha v2 (en línea)
+- [x] Respaldar el WordPress y vaciar la carpeta del sitio (18-11-2026).
+- [x] Cuenta FTP + secretos en GitHub + primera publicación automática (18-11-2026).
+- [ ] **Reserva de prueba desde un celular real**, para confirmar que el mensaje llega a WhatsApp.
+- [ ] Search Console y Bing: verificar el dominio y enviar `https://travelsanrafael.cl/sitemap-index.xml`.
+- [ ] Revisar los datos estructurados en el Rich Results Test.
+- [ ] Google Business Profile con el mismo nombre, dirección y teléfono, enlazado al sitio.
+- [ ] Guardar el respaldo del WordPress (archivos y base) por un tiempo.
+- [ ] **Cambiar la contraseña** que se compartió en el chat.
+- [ ] Opcional: actualizar las versiones de las acciones del workflow cuando GitHub retire Node 20 (hoy solo genera un aviso).
+
+### Puesta en marcha v1 con Flow (guardada, no publicada; pasos en el README de la v1)
 - [ ] Respaldar el WordPress actual (archivos y base de datos).
 - [ ] Crear la base MySQL e importar `sql/schema.sql`.
 - [ ] Crear el correo `reservas@travelsanrafael.cl`.
@@ -188,24 +248,24 @@ Commit `363e6d5`.
 - [ ] Google Business Profile con el mismo nombre, dirección y teléfono.
 
 ### No verificado todavía
-- Reserva completa con pago real: necesita el hosting con MySQL y el sandbox de Flow.
-- Calendario con fechas reales seleccionables.
-- Fluidez de las animaciones con scroll real, incluido el cupón: el latido del botón, el brillo y el video.
-- Safari y celulares físicos. Solo se revisó con capturas de Edge a 1440, 768 y 390 px.
+- **v2:**
+  - envío real a WhatsApp desde un celular (en las pruebas automáticas se intercepta `window.open`);
+  - Safari y celulares físicos;
+  - fluidez de las animaciones con scroll real.
+- **v1:** reserva completa con pago real; necesita MySQL y el sandbox de Flow.
 
 ## Siguiente paso
 
-**v2:** subir `costacarrera-v2-PRUEBA.zip` a un subdominio de prueba (no necesita base de datos) y hacer una reserva de prueba desde un celular para ver que llega bien a WhatsApp. Luego confirmar la temporada y los días con salida en `tour.booking`. Las listas de "Puesta en marcha" y "No verificado" de arriba corresponden a la v1 con Flow.
-
-**v1:** instalar el sitio en el hosting y probar una reserva en el sandbox de Flow, siguiendo el README de la v1.
-
-Mientras tanto, conviene definir los descuentos del cupón y pedir al cliente la temporada confirmada.
+1. **Hacer una reserva de prueba desde el celular** en https://travelsanrafael.cl y confirmar que el mensaje llega bien a WhatsApp.
+2. **Enviar el sitemap en Google Search Console.**
+3. **Pedir al cliente** la temporada y los días reales, el valor del transporte, la forma de pago y los descuentos. Cargarlos en `tour.ts` y `content.ts`, hacer push y se publica solo.
 
 ## Cómo retomar
 
 ```powershell
 cd C:\Users\holam\travelsanrafael-v2
+claude                 # Claude Code lee CLAUDE.md; pedir "lee PROGRESO.md y dime en qué quedamos"
 npm.cmd run dev        # vista previa en http://localhost:4321
-npm.cmd run package    # build + auditoría SEO + costacarrera-v2-public_html.zip
-git add -A; git commit -m "mensaje"; git push   # repo: github.com/Millaaa-cl/travelsanrafael-v2
+git add -A; git commit -m "mensaje"; git push   # ⚠ publica en travelsanrafael.cl (ver Actions en GitHub)
+npm.cmd run package    # opcional: zip de respaldo manual
 ```

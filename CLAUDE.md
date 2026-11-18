@@ -20,6 +20,7 @@ npm.cmd run package:prueba  # igual, pero genera costacarrera-v2-PRUEBA.zip para
 npm.cmd run package   # build + audit + costacarrera-v2-public_html.zip (usa `tar -a` para que las rutas del zip lleven "/"; Compress-Archive usa "\" y rompe la extracción en cPanel)
 ```
 
+- **Publicación automática:** `.github/workflows/deploy.yml` construye, corre la auditoría y sube `dist/` por FTPS a la carpeta de travelsanrafael.cl en cada push a `main` (secretos `FTP_SERVER`, `FTP_USERNAME` y `FTP_PASSWORD` en GitHub, con una cuenta FTP limitada a la carpeta del sitio). Un push a `main` publica en producción.
 - No hay suite de tests. La verificación consiste en `npm run audit` (debe terminar con 0 advertencias) y en recorrer el widget en el navegador (en local funciona completo).
 
 ## Arquitectura

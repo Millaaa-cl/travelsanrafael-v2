@@ -39,7 +39,22 @@ En `src/data/tour.ts`, `tour.booking` define qué días se pueden elegir:
 
 El calendario no conoce los cupos reales: si una fecha está llena, se avisa al cliente por WhatsApp y se agrega a `closed`.
 
-## Publicar en cPanel
+## Publicación automática (GitHub Actions)
+
+Cada push a `main` publica el sitio en travelsanrafael.cl sin zip. El workflow es `.github/workflows/deploy.yml` y hace lo siguiente:
+
+1. GitHub construye el sitio y corre la auditoría SEO. Si hay advertencias, se detiene y no publica.
+2. Sube `dist/` por FTPS a la carpeta del sitio, **solo los archivos que cambiaron**. Guarda un archivo `.ftp-deploy-sync-state.json` en el servidor para saber qué subió. Solo borra lo que él mismo subió y ya no existe, nunca archivos ajenos.
+
+**Configuración (una vez):**
+1. Respalda el WordPress de la carpeta de travelsanrafael.cl y mueve su contenido a una carpeta de respaldo, para dejarla vacía.
+2. En cPanel, entra a *Cuentas FTP* y crea una cuenta (por ejemplo `deploy@travelsanrafael.cl`) cuyo **directorio** sea la carpeta del sitio.
+3. En GitHub, entra al repo, luego a *Settings → Secrets and variables → Actions*, y crea `FTP_SERVER`, `FTP_USERNAME` (el nombre completo, con @dominio) y `FTP_PASSWORD`.
+4. En *Actions*, abre **Publicar en travelsanrafael.cl** y usa **Run workflow** para la primera publicación.
+
+Para ver si una publicación funcionó, abre la pestaña *Actions* del repo. Un check verde significa que se publicó. Si los secretos no existen, el workflow construye el sitio, muestra un aviso y no publica.
+
+## Publicar en cPanel con zip (respaldo manual)
 
 No requiere base de datos, PHP ni archivos de configuración.
 

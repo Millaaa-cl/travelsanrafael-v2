@@ -1,0 +1,48 @@
+# Publica el sitio en travelsanrafael.cl en cada push a main (o a mano con "Run workflow").
+# GitHub construye dist/ (el hosting no tiene Node), corre la auditoría SEO y sube por FTPS solo lo que cambió.
+# Requiere los secretos FTP_SERVER, FTP_USERNAME y FTP_PASSWORD (Settings → Secrets and variables → Actions).
+# La cuenta FTP debe estar limitada a la carpeta del sitio en cPanel: por eso server-dir es "./".
+name: Publicar en travelsanrafael.cl
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-produccion
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      FTP_SERVER: ${{ secrets.FTP_SERVER }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Build + auditoría SEO: si hay advertencias, el job falla y no se publica nada
+      - run: npm run audit
+
+      - name: Avisar si faltan los secretos FTP
+        if: env.FTP_SERVER == ''
+        run: echo "::warning::Faltan los secretos FTP_SERVER, FTP_USERNAME y FTP_PASSWORD. El sitio se construyó bien, pero no se publicó."
+
+      - name: Subir por FTPS
+        if: env.FTP_SERVER != ''
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          local-dir: ./dist/
+          server-dir: ./

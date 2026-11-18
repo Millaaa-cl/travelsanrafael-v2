@@ -13,8 +13,8 @@ const { lang } = Astro.props;
 const t = content[lang];
 const es = lang === 'es';
 const seo = es
-  ? { title: 'Tour Laguna San Rafael desde Puerto Río Tranquilo | Reserva online', description: `Full day en lancha rápida hasta el Glaciar San Rafael: traslados, desayuno, almuerzo y whisky con hielo milenario. Adulto ${formatCLP(tour.priceFromCLP)}, niño ${formatCLP(tour.priceChildCLP)}. Reserva por WhatsApp.` }
-  : { title: 'San Rafael Lagoon Tour from Puerto Río Tranquilo | Book online', description: `Full-day speedboat tour to the San Rafael Glacier: transfers, breakfast, lunch and whisky on ancient glacier ice. Adult ${formatCLP(tour.priceFromCLP)}, child ${formatCLP(tour.priceChildCLP)}. Book on WhatsApp.` };
+  ? { title: 'Tour Laguna San Rafael desde Puerto Río Tranquilo | Reserva online', description: `Full day en lancha rápida hasta el Glaciar San Rafael: desayuno, almuerzo y whisky con hielo milenario. Adulto ${formatCLP(tour.priceFromCLP)}, niño ${formatCLP(tour.priceChildCLP)}, sin transporte. Reserva por WhatsApp.` }
+  : { title: 'San Rafael Lagoon Tour from Puerto Río Tranquilo | Book online', description: `Speedboat tour to the San Rafael Glacier with breakfast, lunch and whisky on glacier ice. Adult ${formatCLP(tour.priceFromCLP)}, child ${formatCLP(tour.priceChildCLP)}, no transport. Book on WhatsApp.` };
 ---
 <Base lang={lang} title={seo.title} description={seo.description} routeKey="home"
   schema={[...tourSchema(lang, t.answer.p, t.itinerary.steps), faqSchema(t.faq)]}>

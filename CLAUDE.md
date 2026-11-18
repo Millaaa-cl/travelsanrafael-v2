@@ -61,7 +61,7 @@ npm.cmd run package   # build + audit + costacarrera-v2-public_html.zip (usa `ta
 
 - **Precios:** $170.000 CLP por adulto y $120.000 CLP por niño de hasta 12 años (`priceFromCLP`, `priceChildCLP` y `childMaxAge` en `tour.ts`; en la v2 son también los del total del widget). El sitio dice "por adulto", no "por persona".
 - **Horario:** salida a las 06:20 desde la esquina de Dagoberto Godoy con Exploradores (Puerto Río Tranquilo); regreso entre las 17:00 y las 18:00.
-- **Itinerario:** 2 h de bus, 2 h de navegación con desayuno, 1 h frente al glaciar con degustación de whisky con hielo milenario, pisco sour o jugo, almuerzo y navegación de retorno con snack de alfajores, y regreso por tierra.
+- **Itinerario:** 2 h de bus, 2 h de navegación con desayuno, 1 h frente al glaciar con degustación de whisky con hielo milenario, pisco sour o jugo, almuerzo y navegación de retorno con snack, y regreso por tierra. **El precio no incluye transporte**: el bus desde Puerto Río Tranquilo es opcional, con costo adicional (en el widget hay un checkbox que lo agrega al mensaje de WhatsApp).
 
 Los valores que quedan pendientes están marcados con `TODO` en el código: temporada, entrada a CONAF, coordenadas, redes sociales y razón social.
 

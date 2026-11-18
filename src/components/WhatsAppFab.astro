@@ -14,7 +14,7 @@ const t = content[lang];
 {mobileCta && (
   <div class="mobile-cta">
     <div>
-      <small>{lang === 'es' ? 'Adulto' : 'Adult'}</small>
+      <small>{lang === 'es' ? 'Adulto, sin transporte' : 'Adult, no transport'}</small>
       <strong>{formatCLP(tour.priceFromCLP)}</strong>
     </div>
     <a class="btn btn--primary" href={`${routes.tour[lang]}#reservar`}>{t.bookNow}</a>

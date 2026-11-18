@@ -20,8 +20,9 @@ const i18n = {
 <aside class="booking" id="reservar" aria-labelledby="h-booking" data-i18n={JSON.stringify(i18n)}>
   <div class="booking__head">
     <h2 id="h-booking">{t.h}</h2>
-    <p class="booking__price" style="margin:0"><strong>{formatCLP(tour.priceFromCLP)}</strong><small>{content[lang].perPerson}</small></p>
+    <p class="booking__price" style="margin:0"><strong>{formatCLP(tour.priceFromCLP)}</strong><small>{lang === 'es' ? 'por adulto' : 'per adult'}</small></p>
     <p class="booking__child">{lang === 'es' ? `Niños hasta ${tour.childMaxAge} años` : `Children up to ${tour.childMaxAge}`} <strong>{formatCLP(tour.priceChildCLP)}</strong></p>
+    <p class="booking__notice"><Icon name="info" />{t.noTransport}</p>
   </div>
 
   <h3><span class="n">01</span>{t.step1}</h3>
@@ -67,6 +68,7 @@ const i18n = {
     <div class="field"><label for="bk-email">{t.email}</label><input id="bk-email" name="email" type="email" autocomplete="email" maxlength="160" /></div>
     <div class="field"><label for="bk-lodging">{t.lodging}</label><input id="bk-lodging" name="lodging" maxlength="160" /></div>
     <div class="field"><label for="bk-notes">{t.notes}</label><textarea id="bk-notes" name="notes" rows="2" maxlength="500"></textarea></div>
+    <label class="check"><input type="checkbox" name="transport" /> <span>{t.transport}</span></label>
     <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
     <label class="check"><input type="checkbox" name="terms" required /> <span>{t.terms} <a href={routes.terms[lang]} target="_blank">{t.termsLink}</a></span></label>
 
@@ -190,7 +192,8 @@ const i18n = {
         `${M.date}: ${longDate(selected.date)}`,
         `${M.adults}: ${pax.adults}`,
         pax.children ? `${M.children}: ${pax.children}` : null,
-        `${M.total}: ${money.format(sum)}`, '',
+        `${M.total}: ${money.format(sum)}`,
+        fd.get('transport') ? M.transport : null, '',
         `${M.name}: ${val('name')}`,
         `${M.phone}: ${val('phone')}`,
         val('email') ? `${M.email}: ${val('email')}` : null,

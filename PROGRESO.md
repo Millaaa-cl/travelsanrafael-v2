@@ -2,6 +2,30 @@
 
 Última actualización: 18 de noviembre de 2026
 
+> **Esta carpeta es la versión 2** (`C:\Users\holam\travelsanrafael-v2`): las reservas se envían por WhatsApp, sin Flow ni backend. La versión 1 con Flow sigue en `C:\Users\holam\travelsanrafael`. El historial de abajo es compartido hasta la sección "Versión 2".
+
+## 18 de noviembre: versión 2, reservas por WhatsApp
+
+- **Qué se hizo:** se clonó el proyecto en una carpeta aparte, con su propio repositorio git y sin remoto (para no subirla por error al repo de la v1).
+- **Widget:**
+  - el calendario genera las fechas en el navegador desde `tour.booking` (temporada septiembre a abril, todos los días, desde mañana, 12 meses);
+  - el total se calcula con los precios de `tour.ts`;
+  - "Reservar por WhatsApp $X" abre `wa.me` con fecha, pasajeros, total estimado y los datos del cliente, en ES o EN;
+  - el correo pasa a ser opcional.
+- **Eliminado:** `public/api/`, `public/admin/`, `sql/`, las páginas de pago confirmado o fallido, y las reglas de `api/` en `.htaccess` y `robots.txt`.
+- **Textos:** se quitó toda mención a Flow:
+  - ítem de confianza "Reserva directa";
+  - FAQ "¿Cómo reservo y pago?";
+  - footer;
+  - meta descriptions;
+  - `llms.txt`;
+  - términos (la reserva se confirma por WhatsApp y con el pago acordado).
+- **Verificado:** build y auditoría sin advertencias (23 páginas). Con Edge vía CDP, en escritorio (home ES) y en móvil (tour EN), el calendario muestra los días, 2 adultos + 1 niño suman $460.000, el mensaje de WhatsApp sale completo y no hay desborde horizontal.
+- **Pendiente v2:**
+  - confirmar la temporada y los días con salida;
+  - definir cómo se paga tras confirmar por chat;
+  - crear un repo en GitHub si se quiere respaldar la v2 (hoy no tiene remoto).
+
 ## 17 de noviembre: sitio nuevo y rediseño
 
 ### 1. Sitio nuevo completo
@@ -171,15 +195,17 @@ Commit `363e6d5`.
 
 ## Siguiente paso
 
-**Instalar el sitio en el hosting y probar una reserva en el sandbox de Flow**, siguiendo los pasos de "Puesta en marcha en cPanel" del README. Es lo único que falta para que los días del calendario se puedan seleccionar y para confirmar que el pago, los correos y el panel funcionan de punta a punta. Al crear las salidas, el formulario ya trae los precios nuevos.
+**v2:** subir `costacarrera-v2-PRUEBA.zip` a un subdominio de prueba (no necesita base de datos) y hacer una reserva de prueba desde un celular para ver que llega bien a WhatsApp. Luego confirmar la temporada y los días con salida en `tour.booking`. Las listas de "Puesta en marcha" y "No verificado" de arriba corresponden a la v1 con Flow.
+
+**v1:** instalar el sitio en el hosting y probar una reserva en el sandbox de Flow, siguiendo el README de la v1.
 
 Mientras tanto, conviene definir los descuentos del cupón y pedir al cliente la temporada confirmada.
 
 ## Cómo retomar
 
 ```powershell
-cd C:\Users\holam\travelsanrafael
+cd C:\Users\holam\travelsanrafael-v2
 npm.cmd run dev        # vista previa en http://localhost:4321
-npm.cmd run package    # build + auditoría SEO + zip para subir
-git add -A; git commit -m "mensaje"; git push
+npm.cmd run package    # build + auditoría SEO + costacarrera-v2-public_html.zip
+git add -A; git commit -m "mensaje"   # sin push: la v2 aún no tiene repo en GitHub
 ```

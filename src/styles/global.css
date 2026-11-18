@@ -517,6 +517,10 @@ p { margin: 0 0 1em; }
 .cal__key--open { background: var(--ice); color: var(--teal-deep); }
 .cal__key--low { background: var(--ice); color: var(--red); }
 .cal__key--sold { color: #b5babc; text-decoration: line-through; }
+.cal__key--off { color: #b5babc; }
+.booking__sent { background: var(--ice); color: var(--ink); padding: 12px 14px; border-radius: var(--radius-sm); font-size: .9rem; margin: 12px 0 0; font-weight: 600; }
+.booking__sent a { color: var(--teal-deep); }
+.btn--block svg { width: 20px; height: 20px; flex: 0 0 auto; }
 .cal__msg { font-size: .86rem; color: var(--muted); margin: 10px 0 0; min-height: 1.4em; }
 .pax { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; }
 .pax + .pax { border-top: 1px solid var(--line); }

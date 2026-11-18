@@ -4,7 +4,7 @@
  * consistentes, que es clave para SEO local y GEO.
  *
  * ⚠️ Los valores marcados con TODO son provisionales: reemplázalos por los reales.
- * Los precios que se COBRAN salen de la base de datos (panel /admin); los de aquí solo se muestran.
+ * v2: no hay backend. Los precios de aquí se muestran y se usan para el total estimado del widget de reserva.
  */
 export const business = {
   name: 'Costa Carrera Travel',
@@ -32,7 +32,7 @@ export const business = {
 };
 
 export const tour = {
-  priceFromCLP: 170000,     // precio adulto (CLP). El cobro real sale de la tabla departures (/admin/)
+  priceFromCLP: 170000,     // precio adulto (CLP): es el que se muestra y se usa en el total del widget
   priceChildCLP: 120000,    // precio niño (CLP)
   childMaxAge: 12,          // niños hasta 12 años inclusive
   currency: 'CLP',
@@ -44,6 +44,17 @@ export const tour = {
   meetingPoint: {
     es: 'Esquina de Dagoberto Godoy con Exploradores, Puerto Río Tranquilo',
     en: 'Corner of Dagoberto Godoy and Exploradores streets, Puerto Río Tranquilo',
+  },
+  /**
+   * Fechas que el calendario ofrece (v2: sin backend, la reserva se envía por WhatsApp y se confirma por chat).
+   * TODO: ajustar a la temporada real.
+   */
+  booking: {
+    minDaysAhead: 1,                       // primer día reservable (1 = mañana)
+    monthsAhead: 12,                       // meses que se pueden navegar desde el actual
+    seasonMonths: [9, 10, 11, 12, 1, 2, 3, 4], // meses con salidas (1 = enero); coincide con `season`
+    weekdays: [0, 1, 2, 3, 4, 5, 6],       // días con salida (0 = domingo … 6 = sábado)
+    closed: [] as string[],                // fechas sin salida, formato 'AAAA-MM-DD'
   },
 };
 

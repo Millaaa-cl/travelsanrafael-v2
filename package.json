@@ -1,6 +1,6 @@
 {
-  "name": "travelsanrafael",
-  "version": "1.0.0",
+  "name": "travelsanrafael-v2",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -8,8 +8,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "audit": "astro build && node scripts/seo-audit.mjs",
-    "package": "astro build && node scripts/seo-audit.mjs && tar -a -c -f travelsanrafael-public_html.zip -C dist .",
-    "package:prueba": "astro build && node scripts/seo-audit.mjs && node scripts/staging.mjs && tar -a -c -f travelsanrafael-PRUEBA.zip -C dist ."
+    "package": "astro build && node scripts/seo-audit.mjs && tar -a -c -f costacarrera-v2-public_html.zip -C dist .",
+    "package:prueba": "astro build && node scripts/seo-audit.mjs && node scripts/staging.mjs && tar -a -c -f costacarrera-v2-PRUEBA.zip -C dist ."
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.5",

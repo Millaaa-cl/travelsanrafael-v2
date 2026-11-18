@@ -1,95 +1,74 @@
-# travelsanrafael.cl — sitio nuevo
+# travelsanrafael.cl: versión 2 (reservas por WhatsApp)
 
-Sitio estático en Astro, bilingüe (ES/EN), optimizado para SEO, GEO y AEO. Incluye reservas con calendario de cupos y pago en línea con **Flow.cl**, con un backend PHP + MySQL que corre en el mismo hosting cPanel.
+Sitio estático en Astro, bilingüe (ES/EN), optimizado para SEO, GEO y AEO. En esta versión **no hay pago en línea ni backend**: el cliente elige la fecha y los pasajeros en el calendario, completa sus datos y la solicitud se abre en WhatsApp con un mensaje listo para enviar. El equipo confirma los cupos y coordina el pago por chat.
+
+La versión 1, con Flow.cl y backend PHP + MySQL, está en `C:\Users\holam\travelsanrafael` (repo `Millaaa-cl/costacarreratravel`).
 
 ## Estructura
 
 | Carpeta / archivo | Qué contiene |
 |---|---|
-| `src/data/tour.ts` | **Fuente única** de datos del negocio y del tour: precios mostrados, horarios, dirección, imágenes. Edita aquí primero. |
-| `src/i18n/content.ts` | Textos ES/EN de la home y la ficha del tour: itinerario, incluye, FAQ, reseñas, widget. |
+| `src/data/tour.ts` | **Fuente única** de datos del negocio y del tour: precios, horarios, dirección, imágenes, número de WhatsApp (`business.whatsapp`) y fechas del calendario (`tour.booking`). Edita aquí primero. |
+| `src/i18n/content.ts` | Textos ES/EN de la home y la ficha del tour: itinerario, incluye, FAQ, reseñas, widget y el mensaje de WhatsApp (`booking.msg`). |
 | `src/pages/` | Páginas. Las de texto (cómo llegar, nosotros, blog, términos) se editan directamente aquí. |
-| `src/components/BookingWidget.astro` | Calendario y formulario de reserva (JS vanilla). |
+| `src/components/BookingWidget.astro` | Calendario y formulario de reserva (JS vanilla, sin servidor). |
 | `src/lib/schema.ts` | Datos estructurados JSON-LD (TravelAgency, TouristTrip, Product/Offer, FAQPage, Breadcrumb, Article). |
 | `src/pages/llms.txt.ts` | Genera `/llms.txt` (resumen para IA) a partir de `tour.ts`. |
-| `public/api/` | Backend PHP: disponibilidad, reserva, Flow y correos. |
-| `public/admin/` | Panel de administración: reservas y salidas. |
 | `public/.htaccess` | HTTPS, dominio sin www, redirecciones 301 del WordPress antiguo, caché y seguridad. |
-| `sql/schema.sql` | Tablas MySQL. |
 | `scripts/seo-audit.mjs` | Revisa title, description, H1, canonical, hreflang, alt y JSON-LD de cada página. |
 
 ## Comandos
 
 ```bash
-npm install          # primera vez
-npm run dev          # vista previa en http://localhost:4321 (el calendario necesita el backend PHP)
-npm run audit        # build + auditoría SEO
-npm run package      # build + auditoría + travelsanrafael-public_html.zip listo para subir
+npm install             # primera vez
+npm run dev             # vista previa en http://localhost:4321 (el calendario funciona completo en local)
+npm run audit           # build + auditoría SEO
+npm run package         # build + auditoría + costacarrera-v2-public_html.zip listo para subir
+npm run package:prueba  # igual, pero costacarrera-v2-PRUEBA.zip con noindex, para un subdominio de prueba
 ```
 
-## Sitio de prueba en un subdominio (antes de reemplazar el WordPress)
+## Fechas del calendario
 
-1. `npm run package:prueba` genera `travelsanrafael-PRUEBA.zip`. Es igual al sitio real, pero les pide a los buscadores no indexarlo.
-2. En cPanel → *Dominios* (o *Subdominios*), crea `prueba.travelsanrafael.cl`, anota su carpeta raíz y verifica que tenga SSL (*SSL/TLS Status* → *Run AutoSSL*).
-3. Crea una base de datos **aparte** para la prueba e importa `sql/schema.sql`.
-4. Sube y extrae el zip en la carpeta del subdominio.
-5. Copia `api/config.sample.php` como `api/config.php` **dentro de la carpeta del subdominio**. Completa `base_url` = `https://prueba.travelsanrafael.cl`, los datos de la base de prueba con los **nombres completos que muestra cPanel** (empiezan con tu usuario de cPanel; si quedan los de ejemplo, el sistema ignora el archivo), las llaves del **sandbox** de Flow y `'sandbox' => true`.
-6. Entra a `/admin/setup.php`, crea tu usuario, borra `setup.php` y crea algunas salidas.
-7. No protejas el subdominio con contraseña (*Privacidad de directorios*): Flow no podría avisar los pagos a `/api/flow-confirm.php`.
+En `src/data/tour.ts`, `tour.booking` define qué días se pueden elegir:
 
-## Puesta en marcha en cPanel (una sola vez)
+- `minDaysAhead`: primer día reservable (1 = mañana).
+- `monthsAhead`: cuántos meses se pueden navegar.
+- `seasonMonths`: meses con salidas (hoy septiembre a abril).
+- `weekdays`: días de la semana con salida (0 = domingo … 6 = sábado).
+- `closed`: fechas puntuales sin salida, por ejemplo `['2026-12-25', '2027-01-01']`.
+
+El calendario no conoce los cupos reales: si una fecha está llena, se avisa al cliente por WhatsApp y se agrega a `closed`.
+
+## Publicar en cPanel
+
+No requiere base de datos, PHP ni archivos de configuración.
 
 1. **Respaldo:** descarga una copia completa del WordPress actual (Administrador de archivos y la base de datos desde phpMyAdmin).
-2. **Base de datos:**
-   - En cPanel, entra a *Bases de datos MySQL* y crea una base, un usuario y la relación entre ambos con *todos los privilegios*.
-   - En phpMyAdmin, selecciona la base, entra a *Importar* y sube `sql/schema.sql`.
-3. **Correo:** crea la casilla `reservas@travelsanrafael.cl` en *Cuentas de correo*.
-4. **Configuración:**
-   - Copia `public/api/config.sample.php` como **`/home/TU_USUARIO/tsr-config.php`**, es decir, *fuera* de `public_html`.
-   - Completa los datos de la base, Flow, correo y la `setup_key`.
-   - Deja `'sandbox' => true` para las pruebas.
-5. **Subir el sitio:**
-   - Vacía `public_html`. Antes, mueve el WordPress a una carpeta de respaldo.
-   - Sube `travelsanrafael-public_html.zip` y usa *Extraer*.
-   - En el *Administrador de archivos*, activa "Mostrar archivos ocultos" y verifica que exista `.htaccess`.
-6. **PHP:** en *Seleccionar versión de PHP* elige **PHP 8.1 o superior** con las extensiones `pdo_mysql` y `curl`.
-7. **Administrador:**
-   - Abre `https://travelsanrafael.cl/admin/setup.php`, ingresa la `setup_key` y crea tu usuario.
-   - **Borra `public_html/admin/setup.php`** del servidor.
-8. **Salidas:** en `/admin/` ve a *Salidas* y usa *Crear salidas en lote*. Indica el rango de la temporada, los días, los cupos (20) y los precios.
-9. **Flow:**
-   - En sandbox.flow.cl, haz una reserva de prueba con las tarjetas de prueba de Flow. Prueba un pago aprobado, uno rechazado y uno abandonado. Verifica el correo y el panel.
-   - Luego cambia a `'sandbox' => false` con las llaves de producción y haz una compra real de bajo monto.
-10. **Cron (opcional):** en *Cron Jobs*, programa cada 10 minutos `php /home/TU_USUARIO/public_html/api/cron-expire.php`.
-11. **Search Console y Bing Webmaster:**
-    - Verifica el dominio y envía `https://travelsanrafael.cl/sitemap-index.xml`.
-    - Revisa la home y la ficha del tour en el [Rich Results Test](https://search.google.com/test/rich-results).
-12. **Google Business Profile:** usa exactamente el mismo nombre, dirección y teléfono que en `tour.ts`, y enlaza al sitio.
+2. Ejecuta `npm run package`.
+3. Mueve el WordPress a una carpeta de respaldo y vacía `public_html`.
+4. Sube `costacarrera-v2-public_html.zip` y usa *Extraer*.
+5. En el *Administrador de archivos*, activa "Mostrar archivos ocultos" y verifica que exista `.htaccess`.
+6. **Search Console y Bing Webmaster:** verifica el dominio y envía `https://travelsanrafael.cl/sitemap-index.xml`.
+7. **Google Business Profile:** usa exactamente el mismo nombre, dirección y teléfono que en `tour.ts`.
 
-### Actualizar el sitio después
+Para un **subdominio de prueba**, usa `npm run package:prueba`, sube `costacarrera-v2-PRUEBA.zip` a la carpeta del subdominio y extráelo. Después vuelve a correr `npm run package` para dejar `dist/` limpio.
 
-Edita los textos o datos y ejecuta `npm run package`. Sube el zip y extráelo sobre `public_html`. No toca `tsr-config.php`, que está fuera de esa carpeta.
+Para **actualizar** el sitio después: edita, corre `npm run package`, sube el zip y extráelo sobre `public_html`.
 
 ## Cómo funciona una reserva
 
-1. `GET /api/availability.php?month=YYYY-MM` entrega las fechas abiertas, los cupos libres y los precios, tomados de la base.
-2. `POST /api/booking.php` hace lo siguiente:
-   - valida los datos,
-   - recalcula el precio en el servidor (nunca confía en el navegador),
-   - bloquea la fila de la salida (`SELECT … FOR UPDATE`) para evitar sobreventa,
-   - aparta los cupos por 20 minutos,
-   - crea el pago en Flow y devuelve la URL de pago.
-3. Flow avisa a `/api/flow-confirm.php` (webhook) y el cliente vuelve por `/api/flow-return.php`. Ambos consultan `payment/getStatus` con firma y verifican el monto. Si el pago está aprobado, la reserva queda `paid` y se envían el voucher al cliente y el aviso a `contacto@cctravel.cl`.
-4. Los cupos de pagos no completados se liberan solos cuando vence el plazo.
+1. El calendario muestra los días de `tour.booking`.
+2. El cliente elige fecha, adultos y niños. El widget calcula el total estimado con `priceFromCLP` y `priceChildCLP`.
+3. Completa nombre, teléfono (obligatorios), país, correo, alojamiento y comentarios, y acepta los términos.
+4. Al tocar "Reservar por WhatsApp" se abre `wa.me/<business.whatsapp>` con un mensaje que lleva todos esos datos, en el idioma de la página.
+5. El cliente envía el mensaje. El equipo responde, confirma los cupos y coordina el pago.
 
 ## Pendientes de contenido (buscar `TODO` en el código)
 
 - [x] Precios ($170.000 adulto, $120.000 niño hasta 12 años), horario de salida (06:20), punto de encuentro, itinerario y qué incluye.
-- [x] Fotos propias optimizadas en `public/images/`.
-- [ ] Al crear las salidas en `/admin/`, usa **$170.000** adulto y **$120.000** niño. El formulario ya trae esos valores por defecto. Si cambian, actualiza también `tour.ts`.
-- [ ] Confirmar la temporada de operación (hoy dice "septiembre a abril").
-- [x] Logo transparente (PNG generado desde el SVG del cliente). Si existe un SVG vectorial real (exportado como vectores, no como imagen), conviene reemplazarlo: sería más liviano y nítido a cualquier tamaño.
-- [ ] **Foto para el paso 1 del itinerario** (salida en bus desde Puerto Río Tranquilo) y, si existe, del desayuno a bordo. Se agregan en `images.steps` de `src/data/tour.ts`. El paso 2 ya tiene la foto del puerto de embarque.
+- [ ] Confirmar la temporada de operación y los días con salida (`tour.booking`).
+- [ ] Definir cómo se paga después de confirmar (transferencia, link de pago, efectivo) para responder siempre igual.
+- [ ] **Foto para el paso 1 del itinerario** (salida en bus) y, si existe, del desayuno a bordo.
 - [ ] Coordenadas de la oficina, localidad exacta y redes sociales (`business.social`, para `sameAs`).
 - [ ] Historia real del equipo en *Nosotros* (E-E-A-T).
 - [ ] Política de cancelación definitiva en *Términos*.

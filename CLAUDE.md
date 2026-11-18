@@ -4,9 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Proyecto
 
-Sitio de reservas de **travelsanrafael.cl**: un solo producto, el Tour Full Day Laguna San Rafael (Aysén, Chile). Es bilingüe (ES por defecto en `/`, EN en `/en/`) y está optimizado para SEO, GEO y AEO.
+**Versión 2** del sitio de reservas de **travelsanrafael.cl** (reservas por WhatsApp, sin pago en línea ni backend; la v1 con Flow + PHP vive en `C:\Users\holam\travelsanrafael`). Un solo producto: el Tour Full Day Laguna San Rafael (Aysén, Chile). Es bilingüe (ES por defecto en `/`, EN en `/en/`) y está optimizado para SEO, GEO y AEO.
 
-Se publica en un hosting **cPanel compartido (Apache + PHP 8 + MySQL)** subiendo el contenido de `dist/` a `public_html`. No hay Node en el servidor.
+Es 100 % estático: se publica en un hosting cPanel (Apache) subiendo el contenido de `dist/` a `public_html`. No hay Node, PHP ni base de datos en uso. El repo git de esta carpeta **no tiene remoto** (no hacer push al repo de la v1).
 
 El usuario se comunica en español: los textos del sitio, los comentarios y la documentación están en español.
 
@@ -16,19 +16,15 @@ El usuario se comunica en español: los textos del sitio, los comentarios y la d
 npm.cmd run dev       # http://localhost:4321 (en PowerShell usar npm.cmd si la ExecutionPolicy bloquea npm.ps1)
 npm.cmd run build     # genera dist/
 npm.cmd run audit     # build + scripts/seo-audit.mjs (title/description/H1/canonical/hreflang/alt/JSON-LD por página; exit 1 si hay advertencias)
-npm.cmd run package:prueba  # igual, pero genera travelsanrafael-PRUEBA.zip para un subdominio de prueba: scripts/staging.mjs agrega noindex (meta + X-Robots-Tag) y bloquea robots.txt. Después vuelve a correr "package" para dejar dist/ limpio.
-npm.cmd run package   # build + audit + travelsanrafael-public_html.zip (usa `tar -a` para que las rutas del zip lleven "/"; Compress-Archive usa "\" y rompe la extracción en cPanel)
+npm.cmd run package:prueba  # igual, pero genera costacarrera-v2-PRUEBA.zip para un subdominio de prueba: scripts/staging.mjs agrega noindex (meta + X-Robots-Tag) y bloquea robots.txt. Después vuelve a correr "package" para dejar dist/ limpio.
+npm.cmd run package   # build + audit + costacarrera-v2-public_html.zip (usa `tar -a` para que las rutas del zip lleven "/"; Compress-Archive usa "\" y rompe la extracción en cPanel)
 ```
 
-- No hay suite de tests. La verificación consiste en `npm run audit` (debe terminar con 0 advertencias) y en `php -l` para los archivos PHP.
-- PHP no está instalado en el sistema. Si hace falta, se puede descargar una versión portable en el scratchpad.
-- **El backend PHP no corre en `astro dev`.** En local, el calendario de reservas muestra el mensaje de error y el enlace a WhatsApp. Es lo esperado.
+- No hay suite de tests. La verificación consiste en `npm run audit` (debe terminar con 0 advertencias) y en recorrer el widget en el navegador (en local funciona completo).
 
 ## Arquitectura
 
-Hay dos mitades que solo se comunican por HTTP:
-
-**1. Frontend estático (Astro 7, sin framework de UI, CSS propio en `src/styles/global.css`)**
+**Frontend estático (Astro 7, sin framework de UI, CSS propio en `src/styles/global.css`)**
 - `src/data/tour.ts` es la **fuente única** de los datos del negocio y del tour: precio mostrado, horarios, punto de encuentro, dirección e imágenes (con sus dimensiones y textos alt ES/EN). Los textos, el JSON-LD (`src/lib/schema.ts`) y `/llms.txt` (`src/pages/llms.txt.ts`) se calculan desde aquí. Cambiar un dato en este archivo lo actualiza en todo el sitio.
 - `src/i18n/content.ts` reúne todo el copy ES/EN de la home y del tour: itinerario, incluye, FAQ, reseñas, textos del widget y footer. Los párrafos `answer` y las FAQ son el contenido pensado para AEO.
 - `src/i18n/routes.ts` mapea cada página a sus slugs ES/EN (que son distintos entre idiomas). Lo usan el menú, el selector de idioma y el hreflang (`Base.astro`). **Al agregar una página, regístrala aquí.**
@@ -54,30 +50,16 @@ Hay dos mitades que solo se comunican por HTTP:
   - Edge no baja de unos 500 px de ancho, así que para ver móvil hay que cargar la página dentro de un `<iframe width="390">`.
   - Para medir desbordes horizontales en móvil no basta el iframe: hay que emular el dispositivo con Edge vía CDP (`--remote-debugging-port`, `Emulation.setDeviceMetricsOverride` con `mobile: true`) y comparar `document.documentElement.scrollWidth` con `clientWidth`. Los celulares ignoran `overflow-x: hidden` en `body`, así que un elemento más ancho que la pantalla hace que la página se deslice de lado.
   - En grillas CSS, un hijo que contiene un carrusel o una tabla ancha necesita `min-width: 0`; si no, la columna crece al ancho del contenido (pasó con `.reviews-wrap`). Como red de seguridad, `html` y `body` usan `overflow-x: clip`, que no rompe el `position: sticky`.
-- `src/components/BookingWidget.astro` es JS vanilla. Llama a `/api/availability.php` y `/api/booking.php` y redirige a la URL de pago de Flow.
-
-**2. Backend PHP + MySQL (`public/api/`, `public/admin/`, que Astro copia tal cual a `dist/`)**
-- La configuración se carga primero desde `api/config.php` (propio de cada copia del sitio, lo que usa el subdominio de prueba) y, si no existe, desde `/home/USUARIO/tsr-config.php` (fuera de public_html, lo recomendado en producción). Un archivo que conserve los valores de ejemplo (`tuusuario_…`, `usuario_tsr`, `CAMBIAR`) se ignora y se avisa en el `error_log` (`config_is_placeholder()`); la salida accidental de un config (BOM) se descarta con `ob_start`. Si la base no conecta, `/admin/` muestra un aviso con el archivo en uso (`config_file_label()`) en vez de quedar en blanco. El `.htaccess` redirige a HTTPS y quita "www" sin fijar el dominio, así que sirve igual en un subdominio. La plantilla es `api/config.sample.php`. Ver `config()` en `api/lib/bootstrap.php`.
-- El esquema de la base está en `sql/schema.sql`: `departures` (fecha, capacidad, `booked`, precios), `bookings` y `admins`.
-- **Los precios que se cobran vienen de la tabla `departures`** (se definen por salida en `/admin/`) y se recalculan en el servidor. El `priceFromCLP` de `tour.ts` solo se muestra en el sitio. Al cambiar el precio, actualiza ambos.
-- Modelo de cupos:
-  - `departures.booked` cuenta las reservas pagadas **y también las pendientes**;
-  - `booking.php` bloquea la fila con `SELECT … FOR UPDATE`, aparta los cupos por `hold_minutes` (20) y luego crea el pago en Flow fuera de la transacción;
-  - si falla la creación del pago, libera los cupos;
-  - `expire_pending()` libera los pendientes vencidos y se llama en cada request, así que el cron (`api/cron-expire.php`, solo CLI) es opcional.
-- Flow.cl (`api/lib/Flow.php`) firma con HMAC-SHA256 los pares `clave+valor` ordenados por clave. `sync_payment()` en `api/lib/payments.php` es **idempotente** y lo llaman tanto el webhook `flow-confirm.php` como el retorno del navegador `flow-return.php`:
-  - consulta `payment/getStatus` y verifica el monto;
-  - marca la reserva como `paid` y envía los correos (`Mailer.php`, `mail()` de cPanel);
-  - si el pago llega después de expirar la reserva, vuelve a tomar los cupos y avisa al admin si hubo sobreventa.
-- `public/.htaccess` hace lo siguiente:
-  - fuerza HTTPS y el dominio sin www;
-  - redirige con 301 las URLs del WordPress antiguo (`/itinerario`, `/cart`, …);
-  - bloquea `api/lib`, `api/config*` y `api/cron-*`.
-- `admin/index.php` es un panel de un solo archivo (sesión + CSRF). Cambiar una reserva a anulada o reembolsada libera sus cupos. `admin/setup.php` crea el primer admin con la `setup_key` y después se debe borrar del servidor.
+- `src/components/BookingWidget.astro` es JS vanilla y no llama a ningún servidor:
+  - genera los días disponibles en el navegador desde `tour.booking` en `tour.ts` (`minDaysAhead`, `monthsAhead`, `seasonMonths`, `weekdays`, `closed`);
+  - el total usa `priceFromCLP` / `priceChildCLP`;
+  - al enviar, arma el mensaje con `content.ts` → `booking.msg` y abre `https://wa.me/<business.whatsapp>?text=…` con `window.open`, sin `'noopener'` en las features (con él siempre devuelve `null`). Si la ventana se bloquea, navega en la misma pestaña.
+  - No hay control de cupos: el operador confirma por chat, y las fechas llenas se agregan a `closed`.
+- `public/.htaccess` fuerza HTTPS y el dominio sin www, redirige con 301 las URLs del WordPress antiguo (`/itinerario`, `/cart`, …) y bloquea archivos ocultos.
 
 ## Datos del tour (confirmados por el cliente)
 
-- **Precios:** $170.000 CLP por adulto y $120.000 CLP por niño de hasta 12 años (`priceFromCLP`, `priceChildCLP` y `childMaxAge` en `tour.ts`). El sitio dice "por adulto", no "por persona".
+- **Precios:** $170.000 CLP por adulto y $120.000 CLP por niño de hasta 12 años (`priceFromCLP`, `priceChildCLP` y `childMaxAge` en `tour.ts`; en la v2 son también los del total del widget). El sitio dice "por adulto", no "por persona".
 - **Horario:** salida a las 06:20 desde la esquina de Dagoberto Godoy con Exploradores (Puerto Río Tranquilo); regreso entre las 17:00 y las 18:00.
 - **Itinerario:** 2 h de bus, 2 h de navegación con desayuno, 1 h frente al glaciar con degustación de whisky con hielo milenario, pisco sour o jugo, almuerzo y navegación de retorno con snack de alfajores, y regreso por tierra.
 

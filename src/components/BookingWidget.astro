@@ -1,18 +1,21 @@
 ---
 /**
- * Widget de reserva: calendario con disponibilidad real, pasajeros y datos del cliente.
- * Habla con el backend PHP en /api/ (availability.php y booking.php) y redirige a Flow para pagar.
- * JS vanilla (~4 KB): no carga ningún framework.
+ * Widget de reserva (v2, sin backend): calendario con los días de temporada de `tour.booking`, pasajeros y datos
+ * del cliente. Al enviar, abre WhatsApp con la solicitud lista (fecha, pasajeros, total y datos); el operador
+ * confirma los cupos y coordina el pago por chat. JS vanilla, sin frameworks ni llamadas al servidor.
  */
 import { content } from '../i18n/content';
 import { routes, type Lang } from '../i18n/routes';
 import Icon from './Icon.astro';
-import { waLink, tour, formatCLP } from '../data/tour';
+import { business, tour, formatCLP } from '../data/tour';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const t = content[lang].booking;
-const i18n = { ...t, locale: lang === 'es' ? 'es-CL' : 'en-US', lang, wa: waLink(content[lang].whatsappMsg) };
+const i18n = {
+  ...t, locale: lang === 'es' ? 'es-CL' : 'en-US', lang,
+  wa: business.whatsapp, priceAdult: tour.priceFromCLP, priceChild: tour.priceChildCLP, cfg: tour.booking,
+};
 ---
 <aside class="booking" id="reservar" aria-labelledby="h-booking" data-i18n={JSON.stringify(i18n)}>
   <div class="booking__head">
@@ -30,9 +33,8 @@ const i18n = { ...t, locale: lang === 'es' ? 'es-CL' : 'en-US', lang, wa: waLink
     </div>
     <div class="cal__grid" data-grid role="grid"></div>
     <ul class="cal__legend" aria-hidden="true">
-      <li><span class="cal__key cal__key--open">20</span>{lang === 'es' ? 'Cupos libres' : 'Seats left'}</li>
-      <li><span class="cal__key cal__key--low">3</span>{lang === 'es' ? 'Últimos cupos' : 'Last seats'}</li>
-      <li><span class="cal__key cal__key--sold">27</span>{lang === 'es' ? 'Agotado' : 'Sold out'}</li>
+      <li><span class="cal__key cal__key--open">12</span>{t.legendOpen}</li>
+      <li><span class="cal__key cal__key--off">13</span>{t.legendOff}</li>
     </ul>
     <p class="cal__msg" data-msg role="status">{t.loading}</p>
   </div>
@@ -58,158 +60,153 @@ const i18n = { ...t, locale: lang === 'es' ? 'es-CL' : 'en-US', lang, wa: waLink
 
     <h3><span class="n">03</span>{t.step3}</h3>
     <div class="field"><label for="bk-name">{t.name}</label><input id="bk-name" name="name" required autocomplete="name" maxlength="120" /></div>
-    <div class="field"><label for="bk-email">{t.email}</label><input id="bk-email" name="email" type="email" required autocomplete="email" maxlength="160" /></div>
     <div class="field field--row">
       <div><label for="bk-phone">{t.phone}</label><input id="bk-phone" name="phone" type="tel" required autocomplete="tel" maxlength="30" /></div>
       <div><label for="bk-country">{t.country}</label><input id="bk-country" name="country" autocomplete="country-name" maxlength="60" /></div>
     </div>
+    <div class="field"><label for="bk-email">{t.email}</label><input id="bk-email" name="email" type="email" autocomplete="email" maxlength="160" /></div>
     <div class="field"><label for="bk-lodging">{t.lodging}</label><input id="bk-lodging" name="lodging" maxlength="160" /></div>
     <div class="field"><label for="bk-notes">{t.notes}</label><textarea id="bk-notes" name="notes" rows="2" maxlength="500"></textarea></div>
     <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
     <label class="check"><input type="checkbox" name="terms" required /> <span>{t.terms} <a href={routes.terms[lang]} target="_blank">{t.termsLink}</a></span></label>
 
     <div class="summary" data-summary hidden></div>
-    <div class="booking__error" data-error role="alert" hidden></div>
-    <button class="btn btn--primary btn--block" type="submit" data-submit disabled>{t.selectDate}</button>
-    <p class="booking__note"><Icon name="lock" />{t.secure}</p>
+    <button class="btn btn--primary btn--block" type="submit" data-submit disabled><Icon name="whatsapp" /><span data-label>{t.selectDate}</span></button>
+    <p class="booking__sent" data-sent role="status" hidden></p>
+    <p class="booking__note"><Icon name="whatsapp" />{t.secure}</p>
     <p class="booking__note">{t.hold}</p>
   </form>
 </aside>
 
 <script>
-  type Dep = { date: string; seats: number; priceAdult: number; priceChild: number };
+  type Dep = { date: string };
   const root = document.getElementById('reservar');
   if (root) {
     const T = JSON.parse(root.dataset.i18n || '{}');
+    const cfg = T.cfg as { minDaysAhead: number; monthsAhead: number; seasonMonths: number[]; weekdays: number[]; closed: string[] };
     const $ = <E extends Element = HTMLElement>(s: string) => root.querySelector(s) as unknown as E;
     const grid = $('[data-grid]'), msg = $('[data-msg]'), monthEl = $('[data-month]');
     const prevBtn = $<HTMLButtonElement>('[data-prev]'), nextBtn = $<HTMLButtonElement>('[data-next]');
     const form = $<HTMLFormElement>('[data-form]'), submit = $<HTMLButtonElement>('[data-submit]');
-    const summary = $('[data-summary]'), errorBox = $('[data-error]');
+    const label = $('[data-label]'), summary = $('[data-summary]'), sentBox = $('[data-sent]');
     const money = new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 });
-    const cache = new Map<string, Dep[]>();
     const pax = { adults: 1, children: 0 };
-    let month = '', minMonth = '', maxMonth = '';
+    const MAX_PAX = 20;
     let selected: Dep | null = null;
 
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const iso = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
     const addMonth = (m: string, n: number) => {
       const [y, mo] = m.split('-').map(Number);
       const d = new Date(y, mo - 1 + n, 1);
-      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}`;
     };
+    const today = new Date();
+    const first = new Date(today.getFullYear(), today.getMonth(), today.getDate() + cfg.minDaysAhead);
+    const minMonth = `${today.getFullYear()}-${pad(today.getMonth() + 1)}`;
+    const maxMonth = addMonth(minMonth, cfg.monthsAhead - 1);
+    const closed = new Set(cfg.closed);
+    const isOpen = (d: Date) =>
+      d >= first && cfg.seasonMonths.includes(d.getMonth() + 1) && cfg.weekdays.includes(d.getDay()) && !closed.has(iso(d));
+    const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+    const longDate = (s: string) => cap(new Date(s + 'T12:00:00').toLocaleDateString(T.locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }));
 
-    async function load(m?: string) {
-      msg.textContent = T.loading;
-      try {
-        if (m && cache.has(m)) { month = m; return render(); }
-        const res = await fetch('/api/availability.php' + (m ? `?month=${m}` : ''), { headers: { Accept: 'application/json' } });
-        if (!res.ok) throw new Error(String(res.status));
-        const data = await res.json();
-        month = data.month; minMonth = data.minMonth; maxMonth = data.maxMonth;
-        cache.set(month, data.departures);
-        render();
-      } catch {
-        // Sin backend (o caído): igual se dibuja el mes, sin días disponibles, para que el calendario no quede vacío.
-        // Las flechas siguen funcionando y cada cambio de mes reintenta la consulta.
-        if (!minMonth) {
-          const now = new Date();
-          minMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-          maxMonth = addMonth(minMonth, 11);
-        }
-        month = m || month || minMonth;
-        render();
-        msg.innerHTML = `${T.loadError} <a href="${T.wa}" target="_blank" rel="noopener">WhatsApp</a>`;
-      }
+    // Empieza en el primer mes con salidas (si el mes actual no tiene, p. ej. fuera de temporada)
+    let month = minMonth;
+    for (let i = 0; i < cfg.monthsAhead; i++) {
+      const m = addMonth(minMonth, i);
+      const [y, mo] = m.split('-').map(Number);
+      const days = new Date(y, mo, 0).getDate();
+      let found = false;
+      for (let d = 1; d <= days && !found; d++) found = isOpen(new Date(y, mo - 1, d));
+      if (found) { month = m; break; }
     }
 
     function render() {
-      const deps = cache.get(month) || [];
-      const byDate = new Map(deps.map((d) => [d.date, d]));
       const [y, mo] = month.split('-').map(Number);
-      const label = new Date(y, mo - 1, 1).toLocaleDateString(T.locale, { month: 'long', year: 'numeric' });
-      monthEl.textContent = label.charAt(0).toUpperCase() + label.slice(1); // "Noviembre de 2026"
+      monthEl.textContent = cap(new Date(y, mo - 1, 1).toLocaleDateString(T.locale, { month: 'long', year: 'numeric' }));
       prevBtn.disabled = month <= minMonth;
       nextBtn.disabled = month >= maxMonth;
-      const first = (new Date(y, mo - 1, 1).getDay() + 6) % 7; // lunes = 0
+      const offset = (new Date(y, mo - 1, 1).getDay() + 6) % 7; // lunes = 0
       const days = new Date(y, mo, 0).getDate();
       let html = T.weekdays.map((w: string) => `<span class="cal__wd">${w}</span>`).join('');
-      html += '<span></span>'.repeat(first);
+      html += '<span></span>'.repeat(offset);
+      let any = false;
       for (let d = 1; d <= days; d++) {
-        const iso = `${month}-${String(d).padStart(2, '0')}`;
-        const dep = byDate.get(iso);
-        if (dep && dep.seats > 0) {
-          const cls = ['cal__day', 'cal__day--open', dep.seats <= 5 ? 'cal__day--low' : '', selected?.date === iso ? 'cal__day--sel' : ''].join(' ');
-          html += `<button type="button" class="${cls}" data-date="${iso}" aria-pressed="${selected?.date === iso}" aria-label="${iso}: ${dep.seats} ${T.seatsLeft}">${d}<small>${dep.seats}<span class="cal__unit"> ${T.seatsLeft}</span></small></button>`;
-        } else if (dep) {
-          html += `<span class="cal__day cal__day--sold" title="${T.soldOut}">${d}</span>`;
+        const date = new Date(y, mo - 1, d), id = iso(date);
+        if (isOpen(date)) {
+          any = true;
+          const sel = selected?.date === id;
+          html += `<button type="button" class="cal__day cal__day--open${sel ? ' cal__day--sel' : ''}" data-date="${id}" aria-pressed="${sel}" aria-label="${longDate(id)}">${d}</button>`;
         } else {
           html += `<span class="cal__day">${d}</span>`;
         }
       }
       grid.innerHTML = html;
-      msg.textContent = deps.some((d) => d.seats > 0) ? '' : T.noDates;
+      msg.textContent = any ? '' : T.noDates;
       update();
     }
 
     function update() {
-      const max = selected ? selected.seats : 20;
       const total = pax.adults + pax.children;
       root!.querySelectorAll<HTMLOutputElement>('[data-out]').forEach((o) => (o.textContent = String(pax[o.dataset.out as 'adults'])));
-      root!.querySelectorAll<HTMLButtonElement>('[data-inc]').forEach((b) => (b.disabled = total >= max));
+      root!.querySelectorAll<HTMLButtonElement>('[data-inc]').forEach((b) => (b.disabled = total >= MAX_PAX));
       root!.querySelector<HTMLButtonElement>('[data-dec="adults"]')!.disabled = pax.adults <= 1;
       root!.querySelector<HTMLButtonElement>('[data-dec="children"]')!.disabled = pax.children <= 0;
-      if (!selected) { summary.hidden = true; submit.disabled = true; submit.textContent = T.selectDate; return; }
-      const sum = pax.adults * selected.priceAdult + pax.children * selected.priceChild;
-      const dateTxt = new Date(selected.date + 'T12:00:00').toLocaleDateString(T.locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+      if (!selected) { summary.hidden = true; submit.disabled = true; label.textContent = T.selectDate; return; }
+      const sum = pax.adults * T.priceAdult + pax.children * T.priceChild;
       summary.innerHTML =
-        `<div><span>${T.dateLabel}</span><span>${dateTxt.charAt(0).toUpperCase() + dateTxt.slice(1)}</span></div>` +
-        `<div><span>${pax.adults} × ${T.adults}</span><span>${money.format(pax.adults * selected.priceAdult)}</span></div>` +
-        (pax.children ? `<div><span>${pax.children} × ${T.children}</span><span>${money.format(pax.children * selected.priceChild)}</span></div>` : '') +
+        `<div><span>${T.dateLabel}</span><span>${longDate(selected.date)}</span></div>` +
+        `<div><span>${pax.adults} × ${T.adults}</span><span>${money.format(pax.adults * T.priceAdult)}</span></div>` +
+        (pax.children ? `<div><span>${pax.children} × ${T.children}</span><span>${money.format(pax.children * T.priceChild)}</span></div>` : '') +
         `<div class="total"><span>${T.total}</span><span>${money.format(sum)}</span></div>`;
       summary.hidden = false;
       submit.disabled = false;
-      submit.textContent = `${T.pay} ${money.format(sum)}`;
+      label.textContent = `${T.pay} ${money.format(sum)}`;
     }
 
     grid.addEventListener('click', (e) => {
       const b = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-date]');
       if (!b) return;
-      selected = (cache.get(month) || []).find((d) => d.date === b.dataset.date) || null;
-      if (selected && pax.adults + pax.children > selected.seats) { pax.adults = Math.min(pax.adults, selected.seats); pax.children = Math.max(0, selected.seats - pax.adults); }
+      selected = { date: b.dataset.date! };
+      sentBox.hidden = true;
       render();
     });
-    prevBtn.addEventListener('click', () => load(addMonth(month, -1)));
-    nextBtn.addEventListener('click', () => load(addMonth(month, 1)));
+    prevBtn.addEventListener('click', () => { month = addMonth(month, -1); render(); });
+    nextBtn.addEventListener('click', () => { month = addMonth(month, 1); render(); });
     root.querySelectorAll<HTMLButtonElement>('[data-inc]').forEach((b) => b.addEventListener('click', () => { pax[b.dataset.inc as 'adults']++; update(); }));
     root.querySelectorAll<HTMLButtonElement>('[data-dec]').forEach((b) => b.addEventListener('click', () => { pax[b.dataset.dec as 'adults']--; update(); }));
 
-    form.addEventListener('submit', async (e) => {
+    form.addEventListener('submit', (e) => {
       e.preventDefault();
-      errorBox.hidden = true;
       if (!selected) return;
       if (!form.checkValidity()) { form.reportValidity(); return; }
       const fd = new FormData(form);
-      const payload = {
-        date: selected.date, adults: pax.adults, children: pax.children, lang: T.lang,
-        name: fd.get('name'), email: fd.get('email'), phone: fd.get('phone'), country: fd.get('country'),
-        lodging: fd.get('lodging'), notes: fd.get('notes'), website: fd.get('website'),
-      };
-      submit.disabled = true; submit.classList.add('is-loading'); submit.textContent = T.paying;
-      try {
-        const res = await fetch('/api/booking.php', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(payload) });
-        const data = await res.json().catch(() => ({}));
-        if (res.ok && data.url) { window.location.href = data.url; return; }
-        throw new Error(data.error || T.errorGeneric);
-      } catch (err) {
-        submit.classList.remove('is-loading');
-        errorBox.textContent = (err as Error).message || T.errorGeneric;
-        errorBox.hidden = false;
-        cache.delete(month); // refresca cupos (pudieron agotarse)
-        selected = null;
-        load(month);
-      }
+      if (String(fd.get('website') || '')) return; // honeypot: bots
+      const M = T.msg, val = (k: string) => String(fd.get(k) || '').trim();
+      const sum = pax.adults * T.priceAdult + pax.children * T.priceChild;
+      const lines = [
+        M.intro, '',
+        `${M.date}: ${longDate(selected.date)}`,
+        `${M.adults}: ${pax.adults}`,
+        pax.children ? `${M.children}: ${pax.children}` : null,
+        `${M.total}: ${money.format(sum)}`, '',
+        `${M.name}: ${val('name')}`,
+        `${M.phone}: ${val('phone')}`,
+        val('email') ? `${M.email}: ${val('email')}` : null,
+        val('country') ? `${M.country}: ${val('country')}` : null,
+        val('lodging') ? `${M.lodging}: ${val('lodging')}` : null,
+        val('notes') ? `${M.notes}: ${val('notes')}` : null,
+      ].filter((l) => l !== null);
+      const url = `https://wa.me/${T.wa}?text=${encodeURIComponent(lines.join('\n'))}`;
+      // Sin 'noopener' en las features: con él window.open siempre devuelve null y no se puede detectar el bloqueo
+      const win = window.open(url, '_blank');
+      if (!win) { window.location.href = url; return; } // ventana bloqueada: abre en la misma pestaña
+      win.opener = null;
+      sentBox.innerHTML = `${T.sent} <a href="${url}" target="_blank" rel="noopener">${T.sentRetry}</a>`;
+      sentBox.hidden = false;
     });
 
-    load();
+    render();
   }
 </script>

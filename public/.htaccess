@@ -2,7 +2,7 @@
 # travelsanrafael.cl · Apache (cPanel)
 # ============================================================
 Options -Indexes
-DirectoryIndex index.html index.php
+DirectoryIndex index.html
 ErrorDocument 404 /404.html
 
 <IfModule mod_rewrite.c>
@@ -22,8 +22,7 @@ RewriteRule ^(my-account|mi-cuenta)/?.*$ / [R=301,L]
 RewriteRule ^wp-(admin|login\.php).*$ / [R=301,L]
 RewriteRule ^feed/?$ /blog/ [R=301,L]
 
-# 3) Bloquear acceso directo a archivos internos del backend
-RewriteRule ^api/(lib|config\.php|config\.sample\.php|cron-) - [F,L]
+# 3) Bloquear archivos ocultos (.git, .env…)
 RewriteRule (^|/)\.(?!well-known) - [F,L]
 </IfModule>
 

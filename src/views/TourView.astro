@@ -25,8 +25,8 @@ const crumbs = [
   { name, path: routes.tour[lang] },
 ];
 const seo = es
-  ? { title: 'Tour Full Day Laguna San Rafael: precio, itinerario y reservas', description: `Itinerario, precio (${price} adulto, ${formatCLP(tour.priceChildCLP)} niño), qué incluye y fechas disponibles del tour en lancha rápida al Glaciar San Rafael. Reserva y paga online con Flow.` }
-  : { title: 'San Rafael Lagoon Full-Day Tour: price, itinerary & booking', description: `Itinerary, price (${price} adult, ${formatCLP(tour.priceChildCLP)} child), inclusions and available dates for the speedboat tour to the San Rafael Glacier. Book and pay online.` };
+  ? { title: 'Tour Full Day Laguna San Rafael: precio, itinerario y reservas', description: `Itinerario, precio (${price} adulto, ${formatCLP(tour.priceChildCLP)} niño), qué incluye y fechas disponibles del tour en lancha rápida al Glaciar San Rafael. Reserva directa por WhatsApp.` }
+  : { title: 'San Rafael Lagoon Full-Day Tour: price, itinerary & booking', description: `Itinerary, price (${price} adult, ${formatCLP(tour.priceChildCLP)} child), inclusions and available dates for the speedboat tour to the San Rafael Glacier. Book direct on WhatsApp.` };
 ---
 <Base lang={lang} title={seo.title} description={seo.description} routeKey="tour"
   schema={[...tourSchema(lang, t.answer.p, t.itinerary.steps), faqSchema(t.faq), breadcrumbSchema(crumbs)]}>

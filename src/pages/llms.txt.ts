@@ -9,7 +9,7 @@ export function GET() {
   const es = content.es;
   const text = `# ${business.name}
 
-> ${business.name} (${business.legalName}) es un operador turístico local de ${business.address.locality}, Región de Aysén, Chile, que ofrece el Tour Full Day a la Laguna San Rafael: navegación en lancha rápida hasta el frente del Glaciar San Rafael (Campo de Hielo Norte, Parque Nacional Laguna San Rafael). Reservas y pago en línea en ${business.url}.
+> ${business.name} (${business.legalName}) es un operador turístico local de ${business.address.locality}, Región de Aysén, Chile, que ofrece el Tour Full Day a la Laguna San Rafael: navegación en lancha rápida hasta el frente del Glaciar San Rafael (Campo de Hielo Norte, Parque Nacional Laguna San Rafael). Reservas directas por WhatsApp desde ${business.url}.
 
 ## Datos clave del tour
 - Nombre: Tour Full Day Laguna San Rafael
@@ -22,7 +22,7 @@ export function GET() {
 - Grupo: máximo ${tour.capacity} pasajeros
 - Incluye: ${es.includes.yes.join('; ')}
 - No incluye: ${es.includes.no.join('; ')}
-- Pago: en línea vía Flow.cl (Webpay, tarjetas, transferencia)
+- Reserva: el cliente elige fecha y pasajeros en el sitio y envía la solicitud por WhatsApp; el operador confirma cupos y coordina el pago
 - Clima: si la Autoridad Marítima cierra el puerto se reprograma o se devuelve el 100%
 
 ## Contacto

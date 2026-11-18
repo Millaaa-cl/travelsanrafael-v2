@@ -10,8 +10,6 @@ export const routes = {
   contact: { es: '/contacto/', en: '/en/contact/' },
   blog: { es: '/blog/', en: '/en/blog/' },
   terms: { es: '/terminos-y-condiciones/', en: '/en/terms-and-conditions/' },
-  ok: { es: '/reserva/confirmada/', en: '/en/booking/confirmed/' },
-  fail: { es: '/reserva/fallida/', en: '/en/booking/failed/' },
   postSeason: {
     es: '/blog/mejor-epoca-para-visitar-laguna-san-rafael/',
     en: '/en/blog/best-time-to-visit-san-rafael-lagoon/',

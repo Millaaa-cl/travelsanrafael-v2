@@ -1,7 +1,7 @@
 ---
 import { routes, type Lang } from '../i18n/routes';
 import { content } from '../i18n/content';
-import { business } from '../data/tour';
+import { business, waLink } from '../data/tour';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
@@ -51,7 +51,7 @@ const badges = [
     </div>
     <div class="footer-bottom">
       <span>© {year} {business.name}. {t.footer.rights}</span>
-      <span>{lang === 'es' ? 'Pagos procesados por Flow.cl' : 'Payments processed by Flow.cl'}</span>
+      <a href={waLink(content[lang].whatsappMsg)} target="_blank" rel="noopener">{lang === 'es' ? 'Reservas por WhatsApp' : 'Bookings on WhatsApp'}</a>
     </div>
   </div>
 </footer>

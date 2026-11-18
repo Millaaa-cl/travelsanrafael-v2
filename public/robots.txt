@@ -4,9 +4,5 @@
 # indexar el contenido público. Resumen para LLMs: /llms.txt
 User-agent: *
 Allow: /
-Disallow: /api/
-Disallow: /admin/
-Disallow: /reserva/
-Disallow: /en/booking/
 
 Sitemap: https://travelsanrafael.cl/sitemap-index.xml

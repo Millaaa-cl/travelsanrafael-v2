@@ -21,6 +21,7 @@
   - `llms.txt`;
   - términos (la reserva se confirma por WhatsApp y con el pago acordado).
 - **Verificado:** build y auditoría sin advertencias (23 páginas). Con Edge vía CDP, en escritorio (home ES) y en móvil (tour EN), el calendario muestra los días, 2 adultos + 1 niño suman $460.000, el mensaje de WhatsApp sale completo y no hay desborde horizontal.
+- **Publicación automática (18-11):** GitHub Actions (`.github/workflows/deploy.yml`) publica por FTPS en la carpeta de travelsanrafael.cl en cada push a `main`. La primera publicación salió bien: el sitio nuevo reemplazó al WordPress (respaldado por el usuario). Error encontrado: `421 Home directory not available`, porque cPanel había agregado `/deploy` al directorio de la cuenta FTP.
 - **Pendiente v2:**
   - confirmar la temporada y los días con salida;
   - definir cómo se paga tras confirmar por chat.

@@ -2,7 +2,7 @@
 
 Sitio estático en Astro, bilingüe (ES/EN), optimizado para SEO, GEO y AEO. En esta versión **no hay pago en línea ni backend**: el cliente elige la fecha y los pasajeros en el calendario, completa sus datos y la solicitud se abre en WhatsApp con un mensaje listo para enviar. El equipo confirma los cupos y coordina el pago por chat.
 
-La versión 1, con Flow.cl y backend PHP + MySQL, está en `C:\Users\holam\travelsanrafael` (repo `Millaaa-cl/costacarreratravel`).
+Repositorio: https://github.com/Millaaa-cl/travelsanrafael-v2. La versión 1, con Flow.cl y backend PHP + MySQL, está en `C:\Users\holam\travelsanrafael` (repo `Millaaa-cl/costacarreratravel`).
 
 ## Estructura
 

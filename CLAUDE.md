@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Versión 2** del sitio de reservas de **travelsanrafael.cl** (reservas por WhatsApp, sin pago en línea ni backend; la v1 con Flow + PHP vive en `C:\Users\holam\travelsanrafael`). Un solo producto: el Tour Full Day Laguna San Rafael (Aysén, Chile). Es bilingüe (ES por defecto en `/`, EN en `/en/`) y está optimizado para SEO, GEO y AEO.
 
-Es 100 % estático: se publica en un hosting cPanel (Apache) subiendo el contenido de `dist/` a `public_html`. No hay Node, PHP ni base de datos en uso. El repo git de esta carpeta **no tiene remoto** (no hacer push al repo de la v1).
+Es 100 % estático: se publica en un hosting cPanel (Apache) subiendo el contenido de `dist/` a `public_html`. No hay Node, PHP ni base de datos en uso. Su repo es `https://github.com/Millaaa-cl/travelsanrafael-v2` (no hacer push al repo de la v1, `costacarreratravel`).
 
 El usuario se comunica en español: los textos del sitio, los comentarios y la documentación están en español.
 

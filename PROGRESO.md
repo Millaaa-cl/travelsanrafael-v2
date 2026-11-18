@@ -6,7 +6,7 @@
 
 ## 18 de noviembre: versión 2, reservas por WhatsApp
 
-- **Qué se hizo:** se clonó el proyecto en una carpeta aparte, con su propio repositorio git y sin remoto (para no subirla por error al repo de la v1).
+- **Qué se hizo:** se clonó el proyecto en una carpeta aparte, con su propio repositorio: github.com/Millaaa-cl/travelsanrafael-v2.
 - **Widget:**
   - el calendario genera las fechas en el navegador desde `tour.booking` (temporada septiembre a abril, todos los días, desde mañana, 12 meses);
   - el total se calcula con los precios de `tour.ts`;
@@ -23,8 +23,7 @@
 - **Verificado:** build y auditoría sin advertencias (23 páginas). Con Edge vía CDP, en escritorio (home ES) y en móvil (tour EN), el calendario muestra los días, 2 adultos + 1 niño suman $460.000, el mensaje de WhatsApp sale completo y no hay desborde horizontal.
 - **Pendiente v2:**
   - confirmar la temporada y los días con salida;
-  - definir cómo se paga tras confirmar por chat;
-  - crear un repo en GitHub si se quiere respaldar la v2 (hoy no tiene remoto).
+  - definir cómo se paga tras confirmar por chat.
 
 ## 17 de noviembre: sitio nuevo y rediseño
 
@@ -207,5 +206,5 @@ Mientras tanto, conviene definir los descuentos del cupón y pedir al cliente la
 cd C:\Users\holam\travelsanrafael-v2
 npm.cmd run dev        # vista previa en http://localhost:4321
 npm.cmd run package    # build + auditoría SEO + costacarrera-v2-public_html.zip
-git add -A; git commit -m "mensaje"   # sin push: la v2 aún no tiene repo en GitHub
+git add -A; git commit -m "mensaje"; git push   # repo: github.com/Millaaa-cl/travelsanrafael-v2
 ```

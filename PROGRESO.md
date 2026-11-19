@@ -4,26 +4,56 @@
 
 > **Esta carpeta es la versión 2** (`C:\Users\holam\travelsanrafael-v2`): las reservas se envían por WhatsApp, sin Flow ni backend. La versión 1 con Flow sigue en `C:\Users\holam\travelsanrafael`. El historial de abajo es compartido hasta la sección "Versión 2".
 
-## 19 de noviembre: nueva tarifa con transporte incluido y otros ajustes
+## 19 de noviembre: tarifa con transporte, Kayak Capillas de Mármol, Tag Manager y caché
 
-- **Tarifa:** $190.000 por adulto **con transporte incluido**; el niño (hasta 12 años) se mantiene en $120.000, también con transporte (`tour.ts`).
-  - Se cambió "sin transporte" por "transporte incluido" en el hero, los datos clave, la barra móvil, la ficha, el itinerario (paso de las 06:20), "Incluye" (transporte pasó de "No incluye" a "Incluye"), las FAQ, las meta descriptions, el blog "Qué llevar" y `llms.txt`.
-  - Widget: el aviso azul ahora dice que el valor incluye el transporte; se quitó la casilla "Necesito transporte" y su línea del mensaje; total "(transporte incluido)".
-  - Verificado con Edge vía CDP en móvil (home ES y tour EN): 2 adultos + 1 niño = $500.000, mensaje de WhatsApp correcto, sin desborde. Build y auditoría sin advertencias.
-- **Cupón:** texto "Hacemos descuentos especiales para familias numerosas y tour operadores" (ES/EN).
-- **Galería:** las 4 fotos de focas dicen "foca leopardo" / "leopard seal".
-- **Nuevo servicio: Kayak Capillas de Mármol** (`/kayak-capillas-de-marmol/`, `/en/marble-caves-kayak-tour/`):
-  - $55.000 por persona (adultos y niños), sale a 5 km de Puerto Río Tranquilo (datos del cliente);
-  - estructura inspirada en la página de referencia de carreratours.cl (hero con precio, datos clave, resumen, recorrido, incluye, qué llevar, información práctica, FAQ, otros tours), con textos propios;
-  - reserva solo por WhatsApp (tarjeta lateral sticky con mensaje ya escrito); barra móvil con el precio del kayak;
-  - enlazado desde el menú ("Kayak"), el footer, `llms.txt` y una tarjeta en la home y en la ficha de la Laguna; el menú ahora dice "Laguna San Rafael" en lugar de "El tour";
-  - JSON-LD TouristTrip + Product + FAQPage + migas de pan;
-  - **sin fotos todavía** (hero de color) y con duración, recorrido e "Incluye" propuestos, marcados con TODO.
-- **Laguna:** el paso 2 del itinerario y `llms.txt` dicen que son 90 km hacia el interior hasta el embarcadero (dato del cliente).
-- **Google Tag Manager** `GTM-5QG5Q92C` en todas las páginas (snippet oficial en `Base.astro`).
-- **Caché:** el hosting agregaba `Cache-Control: max-age=604800` también al HTML (los visitantes podían ver precios viejos hasta 7 días). `.htaccess` ahora fuerza `no-cache, must-revalidate` en `.html`, `.txt` y `.xml`; verificado en vivo (responde 304 si no cambió).
-- **Sitemap:** está bien (200, XML válido, 24 URLs). Search Console mostraba "Couldn't fetch"; se agregó una 301 desde los sitemaps del WordPress antiguo (`sitemap.xml`, `sitemap_index.xml`, `wp-sitemap*.xml`, `*-sitemap.xml`) a `/sitemap-index.xml`.
-- **Proceso:** hook `.claude/hooks/confirm-publish.mjs` que pide confirmación antes de `git commit`/`git push`; antes de publicar se muestra el cambio en local.
+Todo publicado en https://travelsanrafael.cl y verificado en vivo. Commits: `d541a36`, `b430fb7`, `7245a72`, `a87ae8d`, `3f37600` y el de este archivo.
+
+### 1. Ajustes de contenido
+- **Cupón:** nuevo texto "Hacemos descuentos especiales para familias numerosas y tour operadores" (ES/EN, `promo.who`).
+- **Galería:** las 4 fotos de focas dicen "foca leopardo" / "leopard seal". Una de ellas antes no mencionaba la foca.
+- **Laguna:** el paso 2 del itinerario y `llms.txt` dicen que son **90 km** hacia el interior hasta el embarcadero (dato del cliente, `tour.embarkKm`).
+
+### 2. Nueva tarifa de la Laguna: transporte incluido
+- **$190.000 por adulto con transporte incluido.** El niño (hasta 12 años) se mantiene en $120.000, también con transporte (supuesto, ver pendientes).
+- "Sin transporte" pasó a "transporte incluido" en el hero, los datos clave, la barra móvil, la ficha, el paso de las 06:20, las FAQ, las meta descriptions, el blog "Qué llevar" y `llms.txt`. El transporte pasó de "No incluye" a "Incluye".
+- **Widget:**
+  - el aviso azul ahora dice que el valor incluye el transporte;
+  - se quitó la casilla "Necesito transporte" y su línea del mensaje;
+  - el total dice "(transporte incluido)".
+- **Verificado:** con Edge vía CDP en móvil (home ES y tour EN), 2 adultos + 1 niño = $500.000, mensaje de WhatsApp correcto, sin desborde.
+
+### 3. Nuevo servicio: Kayak Capillas de Mármol
+- **Páginas:** `/kayak-capillas-de-marmol/` y `/en/marble-caves-kayak-tour/` (`KayakView.astro`, textos en `src/i18n/kayak.ts`, datos en `tour.ts` → `kayak`).
+- **Datos del cliente:** $55.000 por persona (igual para adultos y niños); sale a 5 km de Puerto Río Tranquilo.
+- **Estructura:** inspirada en la página de referencia de carreratours.cl, con textos propios:
+  - hero con precio;
+  - franja de datos clave;
+  - resumen;
+  - recorrido;
+  - incluye y no incluye;
+  - qué llevar;
+  - información práctica;
+  - 7 FAQ;
+  - "Otros tours".
+- **Reserva solo por WhatsApp:** tarjeta lateral sticky con el mensaje ya escrito. La barra móvil muestra el precio del kayak (`WhatsAppFab` con `service`).
+- **Enlaces:**
+  - menú ("Kayak"; "El tour" pasó a "Laguna San Rafael");
+  - footer y `llms.txt`;
+  - **bloque bajo el collage de la home** (`.kayak-promo`);
+  - tarjeta "Otros tours" en la ficha de la Laguna (`OtherTour.astro`).
+- **JSON-LD:** TouristTrip + Product + FAQPage + migas de pan (`kayakSchema()`).
+- **Sin fotos todavía:** el hero usa un fondo de color, y el bloque de la home y la tarjeta usan un degradado. La duración (3 h, 2 remando), el recorrido, "Incluye" y la temporada son propuestos, marcados con `TODO`.
+
+### 4. Medición, caché y sitemap
+- **Google Tag Manager** `GTM-5QG5Q92C` en las 25 páginas: snippet oficial al inicio del `<head>` y `<noscript>` en el `<body>` (`business.gtmId`). El código que se pegó cargaba `gtm.js` sin el evento `gtm.js`, así que se reemplazó por el oficial. Verificado: `dataLayer` recibe `gtm.js`, `gtm.dom` y `gtm.load`.
+- **Caché:** el hosting agregaba `Cache-Control: max-age=604800` también al HTML, así que los visitantes podían ver precios viejos hasta 7 días. Ahora `.htaccess` fuerza `no-cache, must-revalidate` en `.html`, `.txt` y `.xml`. Verificado en vivo: responde 304 si la página no cambió, y las imágenes siguen con 7 días.
+- **Sitemap:** está bien (200, XML válido, 24 URLs). Search Console mostraba "Couldn't fetch", probablemente porque el sitemap era recién enviado o porque tenía registrado uno del WordPress antiguo.
+  - Se agregó una 301 desde los sitemaps antiguos (`sitemap.xml`, `sitemap_index.xml`, `wp-sitemap*.xml`, `*-sitemap.xml`) a `/sitemap-index.xml`, verificada en vivo.
+  - El usuario envió el sitemap y solicitó indexación.
+
+### 5. Proceso de trabajo
+- Antes de cada publicación se muestra el cambio en local (`npm run dev` + navegador) y se pregunta si se hace commit y push.
+- **Hook** `.claude/hooks/confirm-publish.mjs` (PreToolUse en Bash y PowerShell): pide confirmación ante `git commit` o `git push`. Se activa al reiniciar Claude Code o al abrir `/hooks`.
 
 ## 18 de noviembre (tarde): v2 publicada en travelsanrafael.cl
 
@@ -223,6 +253,12 @@ Commit `363e6d5`.
 | ~~Precio "sin transporte", con transporte opcional mediante una casilla~~ | Reemplazado el 19-11-2026: el transporte va incluido ($190.000 adulto, $120.000 niño). |
 | Publicación automática a producción en cada push a `main` | Pedido del cliente: sin zips. La auditoría SEO frena la publicación si hay advertencias. |
 | Cuenta FTP limitada a la carpeta del sitio | El hosting aloja varios sitios. El deploy no puede tocar los demás y solo borra lo que él mismo subió. |
+| Transporte incluido también para niños ($120.000) | El cliente dijo "para niños se mantiene el precio" sin aclarar el transporte; se asumió incluido para todos. Pendiente de confirmar. |
+| Kayak como página propia, reserva solo por WhatsApp | Pedido del usuario. Precio único por persona y horario según el viento: el calendario no aporta. |
+| Kayak sin fotos de la página de referencia | Son de otra empresa. Se usa fondo de color hasta que el cliente mande fotos propias. |
+| Snippet oficial de GTM en vez del código pegado | El código pegado no enviaba el evento `gtm.js`, y los activadores "Todas las páginas" podrían no dispararse. |
+| HTML, txt y xml con `Cache-Control: no-cache` | El hosting forzaba 7 días de caché. Con `no-cache` cada publicación se ve al instante, y el servidor responde 304 si nada cambió. |
+| Confirmar antes de cada commit/push (hook) | Un push a `main` publica en producción: el usuario quiere ver el cambio en local primero. |
 
 ## Pendiente
 
@@ -242,7 +278,9 @@ Commit `363e6d5`.
 - [ ] Política de cancelación definitiva en *Términos*.
 - [ ] Opcional: logo en SVG vectorial real, y una versión en blanco para fondos oscuros.
 
-- [ ] **Kayak:** fotos propias (hero, collage, galería), y confirmar duración, tiempo remando, horarios, recorrido, qué incluye, edad mínima, temporada y si incluye traslado al punto de partida (buscar TODO en `tour.ts` y `src/i18n/kayak.ts`).
+- [ ] **Kayak: fotos propias** (el usuario las enviará pronto): hero, bloque de la home, tarjeta "Otros tours" y, si alcanzan, collage y galería. Agregar también `image` al JSON-LD (`kayakSchema`).
+- [ ] **Kayak: confirmar con el cliente** duración, tiempo remando, horarios, recorrido, qué incluye, edad mínima, temporada, si incluye traslado al punto de partida y la política si hay viento (buscar `TODO` en `tour.ts` y `src/i18n/kayak.ts`).
+- [ ] **Confirmar que el transporte también va incluido para los niños** ($120.000).
 
 ### Puesta en marcha v2 (en línea)
 - [x] Respaldar el WordPress y vaciar la carpeta del sitio (18-11-2026).
@@ -252,7 +290,8 @@ Commit `363e6d5`.
 - [ ] **20-11-2026: revisar el estado del sitemap en Search Console** (debe decir "Success" con 24 URLs) y borrar de la lista cualquier sitemap del WordPress antiguo.
 - [ ] Revisar el informe "Páginas" → "No encontrada (404)" y agregar 301 para las URLs antiguas que aparezcan.
 - [ ] Bing Webmaster Tools: importar el sitio desde Search Console.
-- [ ] Revisar los datos estructurados en el Rich Results Test.
+- [ ] Revisar los datos estructurados en el Rich Results Test (incluidas las páginas del kayak).
+- [ ] Tag Manager: configurar en el panel de GTM la etiqueta de Google Analytics 4 y, si se quiere, los clics en "Reservar por WhatsApp" como conversión.
 - [ ] Google Business Profile con el mismo nombre, dirección y teléfono, enlazado al sitio.
 - [ ] Guardar el respaldo del WordPress (archivos y base) por un tiempo.
 - [ ] **Cambiar la contraseña** que se compartió en el chat.
@@ -277,14 +316,17 @@ Commit `363e6d5`.
 - **v2:**
   - envío real a WhatsApp desde un celular (en las pruebas automáticas se intercepta `window.open`);
   - Safari y celulares físicos;
-  - fluidez de las animaciones con scroll real.
+  - fluidez de las animaciones con scroll real;
+  - el botón "Reservar por WhatsApp" del kayak desde un celular real;
+  - las etiquetas de Tag Manager (dependen de lo que se configure en el panel).
 - **v1:** reserva completa con pago real; necesita MySQL y el sandbox de Flow.
 
 ## Siguiente paso
 
-1. **Hacer una reserva de prueba desde el celular** en https://travelsanrafael.cl y confirmar que el mensaje llega bien a WhatsApp.
-2. **Enviar el sitemap en Google Search Console.**
-3. **Pedir al cliente** la temporada y los días reales, el valor del transporte, la forma de pago y los descuentos. Cargarlos en `tour.ts` y `content.ts`, hacer push y se publica solo.
+1. **20-11-2026: revisar el sitemap en Search Console**: debe decir "Success" con 24 URLs. Si sigue en "Couldn't fetch", mandar una captura de la lista de sitemaps.
+2. **Fotos del kayak:** cuando lleguen, optimizarlas y ponerlas en la página, la home y la tarjeta "Otros tours".
+3. **Pedir al cliente** los datos del kayak (ver pendientes), confirmar el transporte de los niños, la temporada y los días reales de la Laguna, la forma de pago y los descuentos.
+4. **Hacer una reserva de prueba desde el celular** (Laguna y kayak) y confirmar que el mensaje llega bien a WhatsApp.
 
 ## Cómo retomar
 
@@ -292,6 +334,6 @@ Commit `363e6d5`.
 cd C:\Users\holam\travelsanrafael-v2
 claude                 # Claude Code lee CLAUDE.md; pedir "lee PROGRESO.md y dime en qué quedamos"
 npm.cmd run dev        # vista previa en http://localhost:4321
-git add -A; git commit -m "mensaje"; git push   # ⚠ publica en travelsanrafael.cl (ver Actions en GitHub)
+git add -A; git commit -m "mensaje"; git push   # ⚠ publica en travelsanrafael.cl (ver Actions en GitHub); el hook pide confirmar
 npm.cmd run package    # opcional: zip de respaldo manual
 ```

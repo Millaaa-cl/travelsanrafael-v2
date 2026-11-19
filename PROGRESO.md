@@ -20,6 +20,9 @@
   - JSON-LD TouristTrip + Product + FAQPage + migas de pan;
   - **sin fotos todavía** (hero de color) y con duración, recorrido e "Incluye" propuestos, marcados con TODO.
 - **Laguna:** el paso 2 del itinerario y `llms.txt` dicen que son 90 km hacia el interior hasta el embarcadero (dato del cliente).
+- **Google Tag Manager** `GTM-5QG5Q92C` en todas las páginas (snippet oficial en `Base.astro`).
+- **Caché:** el hosting agregaba `Cache-Control: max-age=604800` también al HTML (los visitantes podían ver precios viejos hasta 7 días). `.htaccess` ahora fuerza `no-cache, must-revalidate` en `.html`, `.txt` y `.xml`; verificado en vivo (responde 304 si no cambió).
+- **Sitemap:** está bien (200, XML válido, 24 URLs). Search Console mostraba "Couldn't fetch"; se agregó una 301 desde los sitemaps del WordPress antiguo (`sitemap.xml`, `sitemap_index.xml`, `wp-sitemap*.xml`, `*-sitemap.xml`) a `/sitemap-index.xml`.
 - **Proceso:** hook `.claude/hooks/confirm-publish.mjs` que pide confirmación antes de `git commit`/`git push`; antes de publicar se muestra el cambio en local.
 
 ## 18 de noviembre (tarde): v2 publicada en travelsanrafael.cl
@@ -245,7 +248,10 @@ Commit `363e6d5`.
 - [x] Respaldar el WordPress y vaciar la carpeta del sitio (18-11-2026).
 - [x] Cuenta FTP + secretos en GitHub + primera publicación automática (18-11-2026).
 - [ ] **Reserva de prueba desde un celular real**, para confirmar que el mensaje llega a WhatsApp.
-- [ ] Search Console y Bing: verificar el dominio y enviar `https://travelsanrafael.cl/sitemap-index.xml`.
+- [x] Search Console: sitemap enviado e indexación solicitada (19-11-2026).
+- [ ] **20-11-2026: revisar el estado del sitemap en Search Console** (debe decir "Success" con 24 URLs) y borrar de la lista cualquier sitemap del WordPress antiguo.
+- [ ] Revisar el informe "Páginas" → "No encontrada (404)" y agregar 301 para las URLs antiguas que aparezcan.
+- [ ] Bing Webmaster Tools: importar el sitio desde Search Console.
 - [ ] Revisar los datos estructurados en el Rich Results Test.
 - [ ] Google Business Profile con el mismo nombre, dirección y teléfono, enlazado al sitio.
 - [ ] Guardar el respaldo del WordPress (archivos y base) por un tiempo.

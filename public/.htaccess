@@ -21,6 +21,9 @@ RewriteRule ^(cart|carrito|checkout|finalizar-compra|shop|tienda|product/.*|prod
 RewriteRule ^(my-account|mi-cuenta)/?.*$ / [R=301,L]
 RewriteRule ^wp-(admin|login\.php).*$ / [R=301,L]
 RewriteRule ^feed/?$ /blog/ [R=301,L]
+# Sitemaps antiguos (WordPress y Yoast: sitemap.xml, sitemap_index.xml, wp-sitemap*.xml, post-sitemap.xml, page-sitemap2.xml…)
+# → sitemap actual. No captura sitemap-index.xml ni sitemap-0.xml (los que genera Astro).
+RewriteRule ^(sitemap(_index)?\.xml(\.gz)?|wp-sitemap[a-z0-9_-]*\.xml|[a-z0-9_-]+-sitemap[0-9]*\.xml)$ /sitemap-index.xml [R=301,L,NC]
 
 # 3) Bloquear archivos ocultos (.git, .env…)
 RewriteRule (^|/)\.(?!well-known) - [F,L]

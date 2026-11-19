@@ -55,3 +55,12 @@ RewriteRule (^|/)\.(?!well-known) - [F,L]
   ExpiresByType image/svg+xml "access plus 6 months"
   ExpiresByType font/woff2 "access plus 1 year"
 </IfModule>
+
+# El hosting agrega por su cuenta "Cache-Control: max-age=604800" (7 días) también al HTML, y gana sobre ExpiresByType:
+# sin esto, quien vuelve al sitio puede ver precios o textos viejos hasta una semana después de publicar.
+# "no-cache" no impide guardar la página: obliga al navegador a preguntar si cambió (responde 304 si no).
+<IfModule mod_headers.c>
+  <FilesMatch "\.(html|txt|xml)$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+</IfModule>

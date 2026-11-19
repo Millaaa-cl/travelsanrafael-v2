@@ -170,6 +170,8 @@ p { margin: 0 0 1em; }
 .promo__body { padding: clamp(28px, 4vw, 48px); }
 .promo h2 { color: #fff; font-size: clamp(2rem, 4.2vw, 3.2rem); line-height: 1; margin: 0 0 18px; max-width: 18ch; }
 .promo__lead { font-size: clamp(1.2rem, 1.6vw, 1.3rem); font-weight: 700; color: #fff; margin: 0; max-width: 46ch; }
+/* Quiénes tienen descuento: separado del lead por una línea fina, mismo blanco y negrita para el contraste sobre el azul */
+.promo__who { font-size: 1.1rem; font-weight: 700; color: #fff; margin: 16px 0 0; padding-top: 14px; border-top: 1px solid rgba(255, 255, 255, .45); max-width: 46ch; }
 .promo__action { position: relative; display: grid; align-content: center; justify-items: start; gap: 14px; padding: clamp(24px, 4vw, 48px); border-top: 2px dashed rgba(255, 255, 255, .6); }
 .promo__note { margin: 0; font-weight: 700; font-size: 1.2rem; }
 /* Botón verde claro (#9fed8b, pedido del cliente) con texto negro; al pasar el mouse se oscurece un poco */

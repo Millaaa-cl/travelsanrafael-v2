@@ -24,6 +24,7 @@ export const content = {
     promo: {
       h: '¡Tu aventura merece un descuento!',
       lead: '¿Quieres conocer la Laguna San Rafael? ¡Tenemos un beneficio especial para ti!',
+      who: 'Hacemos descuentos especiales para familias numerosas y tour operadores.',
       note: '¡No dejes pasar esta oportunidad!',
       cta: 'Quiero mi descuento',
       msg: 'Hola, quiero consultar por los descuentos disponibles para el tour a la Laguna San Rafael',
@@ -164,6 +165,7 @@ export const content = {
     promo: {
       h: 'Your adventure deserves a discount!',
       lead: 'Want to visit San Rafael Lagoon? We have a special offer for you!',
+      who: 'We offer special discounts for large families and tour operators.',
       note: 'Don’t miss this chance!',
       cta: 'Get my discount',
       msg: 'Hi, I would like to ask about current discounts for the San Rafael Lagoon tour',

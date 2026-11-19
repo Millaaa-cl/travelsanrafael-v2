@@ -7,6 +7,7 @@ import Base from '../layouts/Base.astro';
 import Hero from '../components/Hero.astro';
 import Sections from '../components/Sections.astro';
 import Promo from '../components/Promo.astro';
+import OtherTour from '../components/OtherTour.astro';
 import BookingWidget from '../components/BookingWidget.astro';
 import Icon from '../components/Icon.astro';
 import { content } from '../i18n/content';
@@ -113,5 +114,7 @@ const seo = es
     </div>
   </div>
 
-  <Sections lang={lang} show={['parallax', 'gallery', 'reviews', 'faq', 'map', 'cta']} />
+  <Sections lang={lang} show={['parallax', 'gallery', 'reviews', 'faq', 'map']} />
+  <OtherTour lang={lang} to="kayak" heading={es ? 'Otros tours' : 'Other tours'} />
+  <Sections lang={lang} show={['cta']} />
 </Base>

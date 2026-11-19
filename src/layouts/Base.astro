@@ -28,12 +28,16 @@ const ogImage = new URL(image, site).href;
 // La marca se agrega solo si cabe: Google corta los títulos de más de unos 60 caracteres.
 const fullTitle = title.includes(business.name) || title.length > 42 ? title : `${title} | ${business.name}`;
 const jsonLd = [organizationSchema(), websiteSchema(lang), ...schema];
+// Google Tag Manager: snippet oficial (empuja el evento gtm.js que usan los activadores "Todas las páginas")
+const gtm = business.gtmId;
+const gtmHead = gtm && `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${gtm}');`;
 ---
 <!doctype html>
 <html lang={lang === 'es' ? 'es-CL' : 'en'}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {gtm && <script is:inline set:html={gtmHead} />}
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
@@ -76,13 +80,14 @@ const jsonLd = [organizationSchema(), websiteSchema(lang), ...schema];
     {jsonLd.map((s) => <script type="application/ld+json" set:html={JSON.stringify(s)} />)}
   </head>
   <body>
+    {gtm && <noscript><iframe src={`https://www.googletagmanager.com/ns.html?id=${gtm}`} height="0" width="0" style="display:none;visibility:hidden" title="Google Tag Manager"></iframe></noscript>}
     <div class="progress" aria-hidden="true"></div>
     <Header lang={lang} alternates={alternates} />
     <main id="contenido">
       <slot />
     </main>
     <Footer lang={lang} />
-    <WhatsAppFab lang={lang} mobileCta={mobileCta} />
+    <WhatsAppFab lang={lang} mobileCta={mobileCta} service={routeKey === 'kayak' ? 'kayak' : 'tour'} />
     <dialog class="lightbox" aria-label={lang === 'es' ? 'Galería ampliada' : 'Enlarged gallery'}>
       <figure><img src="data:," alt="" /><figcaption></figcaption></figure>
       <button type="button" class="lightbox__btn lightbox__prev" aria-label={lang === 'es' ? 'Foto anterior' : 'Previous photo'}>‹</button>

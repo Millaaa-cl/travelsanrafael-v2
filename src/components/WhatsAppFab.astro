@@ -2,21 +2,27 @@
 import Icon from './Icon.astro';
 import { routes, type Lang } from '../i18n/routes';
 import { content } from '../i18n/content';
-import { tour, formatCLP, waLink } from '../data/tour';
+import { tour, kayak, formatCLP, waLink } from '../data/tour';
+import { kayakContent } from '../i18n/kayak';
 
-interface Props { lang: Lang; mobileCta?: boolean }
-const { lang, mobileCta = true } = Astro.props;
+// service = 'kayak' en la ficha del kayak: la barra móvil muestra su precio y el botón flotante usa su mensaje
+interface Props { lang: Lang; mobileCta?: boolean; service?: 'tour' | 'kayak' }
+const { lang, mobileCta = true, service = 'tour' } = Astro.props;
 const t = content[lang];
+const isKayak = service === 'kayak';
+const bar = isKayak
+  ? { label: kayakContent[lang].perPerson, price: kayak.priceCLP, href: '#reservar', msg: kayakContent[lang].card.msg }
+  : { label: lang === 'es' ? 'Adulto, con transporte' : 'Adult, with transport', price: tour.priceFromCLP, href: `${routes.tour[lang]}#reservar`, msg: t.whatsappMsg };
 ---
-<a class="wa-fab" href={waLink(t.whatsappMsg)} target="_blank" rel="noopener" aria-label={t.whatsappLabel}>
+<a class="wa-fab" href={waLink(bar.msg)} target="_blank" rel="noopener" aria-label={t.whatsappLabel}>
   <Icon name="whatsapp" />
 </a>
 {mobileCta && (
   <div class="mobile-cta">
     <div>
-      <small>{lang === 'es' ? 'Adulto, sin transporte' : 'Adult, no transport'}</small>
-      <strong>{formatCLP(tour.priceFromCLP)}</strong>
+      <small>{isKayak ? bar.label.charAt(0).toUpperCase() + bar.label.slice(1) : bar.label}</small>
+      <strong>{formatCLP(bar.price)}</strong>
     </div>
-    <a class="btn btn--primary" href={`${routes.tour[lang]}#reservar`}>{t.bookNow}</a>
+    <a class="btn btn--primary" href={bar.href}>{t.bookNow}</a>
   </div>
 )}

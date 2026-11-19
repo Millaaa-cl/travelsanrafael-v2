@@ -80,7 +80,7 @@ Para **actualizar** el sitio después: edita, corre `npm run package`, sube el z
 
 ## Pendientes de contenido (buscar `TODO` en el código)
 
-- [x] Precios ($170.000 adulto, $120.000 niño hasta 12 años), horario de salida (06:20), punto de encuentro, itinerario y qué incluye.
+- [x] Precios ($190.000 adulto, $120.000 niño hasta 12 años, transporte incluido), horario de salida (06:20), punto de encuentro, itinerario y qué incluye.
 - [ ] Confirmar la temporada de operación y los días con salida (`tour.booking`).
 - [ ] Definir cómo se paga después de confirmar (transferencia, link de pago, efectivo) para responder siempre igual.
 - [ ] **Foto para el paso 1 del itinerario** (salida en bus) y, si existe, del desayuno a bordo.

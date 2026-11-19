@@ -4,6 +4,7 @@ export type Lang = 'es' | 'en';
 export const routes = {
   home: { es: '/', en: '/en/' },
   tour: { es: '/tour-laguna-san-rafael/', en: '/en/san-rafael-lagoon-tour/' },
+  kayak: { es: '/kayak-capillas-de-marmol/', en: '/en/marble-caves-kayak-tour/' },
   howTo: { es: '/como-llegar/', en: '/en/how-to-get-there/' },
   faq: { es: '/preguntas-frecuentes/', en: '/en/faq/' },
   about: { es: '/nosotros/', en: '/en/about-us/' },

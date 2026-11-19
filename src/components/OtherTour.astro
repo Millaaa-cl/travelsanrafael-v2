@@ -1,0 +1,32 @@
+---
+/**
+ * Tarjeta "Otros tours": enlaza un servicio desde la ficha del otro (y el kayak desde la home).
+ * to = 'tour' (Laguna San Rafael, con foto) | 'kayak' (sin foto todavía: tarjeta de color).
+ * TODO: cuando lleguen fotos del kayak, agregar la imagen en la rama 'kayak'.
+ */
+import { routes, type Lang } from '../i18n/routes';
+import { kayakContent } from '../i18n/kayak';
+import { images } from '../data/tour';
+
+interface Props { lang: Lang; to: 'tour' | 'kayak'; heading: string; ice?: boolean }
+const { lang, to, heading, ice = false } = Astro.props;
+const k = kayakContent[lang];
+const card = to === 'tour'
+  ? { href: routes.tour[lang], t: k.other.lagunaT, d: k.other.lagunaD, link: k.other.link, img: images.collage[0] }
+  : { href: routes.kayak[lang], t: k.cardHome.t, d: k.cardHome.d, link: k.cardHome.link, img: null };
+---
+<section class:list={['section', { 'section--ice': ice }]} aria-labelledby={`h-otro-${to}`}>
+  <div class="container">
+    <h2 id={`h-otro-${to}`} data-reveal="up">{heading}</h2>
+    <a class:list={['tour-card', { 'tour-card--plain': !card.img }]} href={card.href} data-reveal="up">
+      {card.img
+        ? <img src={card.img.src} alt={card.img[lang]} width={card.img.w} height={card.img.h} loading="lazy" decoding="async" />
+        : <span class="tour-card__art" aria-hidden="true"></span>}
+      <div>
+        <h3>{card.t}</h3>
+        <p>{card.d}</p>
+        <span class="tour-card__link">{card.link}</span>
+      </div>
+    </a>
+  </div>
+</section>

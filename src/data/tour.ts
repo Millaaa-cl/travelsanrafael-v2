@@ -22,6 +22,7 @@ export const business = {
   },
   geo: { lat: -46.6236, lng: -72.6747 }, // TODO: coordenadas exactas de la oficina
   hours: '08:00–18:00',
+  gtmId: 'GTM-5QG5Q92C',   // Google Tag Manager (lo carga Base.astro en todas las páginas); vacío = desactivado
   openingDays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
   social: {
     instagram: '', // TODO: https://instagram.com/...
@@ -32,14 +33,15 @@ export const business = {
 };
 
 export const tour = {
-  priceFromCLP: 170000,     // precio adulto (CLP): es el que se muestra y se usa en el total del widget
-  priceChildCLP: 120000,    // precio niño (CLP)
+  priceFromCLP: 190000,     // precio adulto (CLP), transporte incluido: es el que se muestra y se usa en el total del widget
+  priceChildCLP: 120000,    // precio niño (CLP), transporte incluido
   childMaxAge: 12,          // niños hasta 12 años inclusive
   currency: 'CLP',
   durationHours: 11,        // 06:20 → llegada entre 17:00 y 18:00
   capacity: 20,
   season: { es: 'Septiembre a abril', en: 'September to April' }, // TODO: confirmar temporada
   departureTime: '06:20',
+  embarkKm: 90,             // km por tierra desde Puerto Río Tranquilo hasta el embarcadero (confirmado por el cliente)
   returnTime: { es: 'entre 17:00 y 18:00 hrs', en: 'between 5:00 and 6:00 pm' },
   meetingPoint: {
     es: 'Esquina de Dagoberto Godoy con Exploradores, Puerto Río Tranquilo',
@@ -56,6 +58,20 @@ export const tour = {
     weekdays: [0, 1, 2, 3, 4, 5, 6],       // días con salida (0 = domingo … 6 = sábado)
     closed: [] as string[],                // fechas sin salida, formato 'AAAA-MM-DD'
   },
+};
+
+/**
+ * Segundo servicio: Kayak en las Capillas de Mármol (Lago General Carrera).
+ * Confirmado por el cliente: precio por persona (igual para adultos y niños) y que sale a 5 km del pueblo.
+ * La reserva es solo por WhatsApp (sin widget). Los textos están en src/i18n/kayak.ts.
+ */
+export const kayak = {
+  priceCLP: 55000,          // por persona, adultos y niños (confirmado)
+  currency: 'CLP',
+  distanceKm: 5,            // el punto de partida está a 5 km de Puerto Río Tranquilo (confirmado)
+  durationHours: 3,         // TODO: confirmar duración total con el cliente
+  paddleHours: 2,           // TODO: confirmar tiempo remando
+  season: tour.season,      // TODO: confirmar si opera en la misma temporada que la Laguna
 };
 
 export const formatCLP = (n: number) =>

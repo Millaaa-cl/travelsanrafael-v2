@@ -1,8 +1,26 @@
 # Progreso del proyecto: Costa Carrera Travel (travelsanrafael.cl)
 
-Última actualización: 18 de noviembre de 2026
+Última actualización: 19 de noviembre de 2026
 
 > **Esta carpeta es la versión 2** (`C:\Users\holam\travelsanrafael-v2`): las reservas se envían por WhatsApp, sin Flow ni backend. La versión 1 con Flow sigue en `C:\Users\holam\travelsanrafael`. El historial de abajo es compartido hasta la sección "Versión 2".
+
+## 19 de noviembre: nueva tarifa con transporte incluido y otros ajustes
+
+- **Tarifa:** $190.000 por adulto **con transporte incluido**; el niño (hasta 12 años) se mantiene en $120.000, también con transporte (`tour.ts`).
+  - Se cambió "sin transporte" por "transporte incluido" en el hero, los datos clave, la barra móvil, la ficha, el itinerario (paso de las 06:20), "Incluye" (transporte pasó de "No incluye" a "Incluye"), las FAQ, las meta descriptions, el blog "Qué llevar" y `llms.txt`.
+  - Widget: el aviso azul ahora dice que el valor incluye el transporte; se quitó la casilla "Necesito transporte" y su línea del mensaje; total "(transporte incluido)".
+  - Verificado con Edge vía CDP en móvil (home ES y tour EN): 2 adultos + 1 niño = $500.000, mensaje de WhatsApp correcto, sin desborde. Build y auditoría sin advertencias.
+- **Cupón:** texto "Hacemos descuentos especiales para familias numerosas y tour operadores" (ES/EN).
+- **Galería:** las 4 fotos de focas dicen "foca leopardo" / "leopard seal".
+- **Nuevo servicio: Kayak Capillas de Mármol** (`/kayak-capillas-de-marmol/`, `/en/marble-caves-kayak-tour/`):
+  - $55.000 por persona (adultos y niños), sale a 5 km de Puerto Río Tranquilo (datos del cliente);
+  - estructura inspirada en la página de referencia de carreratours.cl (hero con precio, datos clave, resumen, recorrido, incluye, qué llevar, información práctica, FAQ, otros tours), con textos propios;
+  - reserva solo por WhatsApp (tarjeta lateral sticky con mensaje ya escrito); barra móvil con el precio del kayak;
+  - enlazado desde el menú ("Kayak"), el footer, `llms.txt` y una tarjeta en la home y en la ficha de la Laguna; el menú ahora dice "Laguna San Rafael" en lugar de "El tour";
+  - JSON-LD TouristTrip + Product + FAQPage + migas de pan;
+  - **sin fotos todavía** (hero de color) y con duración, recorrido e "Incluye" propuestos, marcados con TODO.
+- **Laguna:** el paso 2 del itinerario y `llms.txt` dicen que son 90 km hacia el interior hasta el embarcadero (dato del cliente).
+- **Proceso:** hook `.claude/hooks/confirm-publish.mjs` que pide confirmación antes de `git commit`/`git push`; antes de publicar se muestra el cambio en local.
 
 ## 18 de noviembre (tarde): v2 publicada en travelsanrafael.cl
 
@@ -199,7 +217,7 @@ Commit `363e6d5`.
 | `.gitignore` excluye `config.php` y `tsr-config.php` | Esos archivos guardan claves de la base y de Flow, y no deben ir a GitHub. (Solo aplica a la v1.) |
 | **v2 en carpeta y repo aparte**, sin backend | El cliente prefirió reservar por WhatsApp. La v1 con Flow queda intacta por si se retoma. |
 | Fechas del calendario configuradas en `tour.booking` | Sin base de datos no hay cupos reales: el operador confirma por chat y las fechas llenas se agregan a `closed`. |
-| Precio "sin transporte", con transporte opcional mediante una casilla | Pedido del cliente. El valor del transporte se cotiza por WhatsApp hasta que se defina. |
+| ~~Precio "sin transporte", con transporte opcional mediante una casilla~~ | Reemplazado el 19-11-2026: el transporte va incluido ($190.000 adulto, $120.000 niño). |
 | Publicación automática a producción en cada push a `main` | Pedido del cliente: sin zips. La auditoría SEO frena la publicación si hay advertencias. |
 | Cuenta FTP limitada a la carpeta del sitio | El hosting aloja varios sitios. El deploy no puede tocar los demás y solo borra lo que él mismo subió. |
 
@@ -211,7 +229,7 @@ Commit `363e6d5`.
 - [x] Foto del paso 2 del itinerario (puerto de embarque).
 - [ ] **Confirmar la temporada y los días con salida** (`tour.booking` en `tour.ts`). Hoy se ofrecen todos los días de septiembre a abril.
 - [ ] **Definir la forma de pago** después de confirmar por WhatsApp (transferencia, link de pago, efectivo).
-- [ ] **Definir el valor del transporte** para mostrarlo en lugar de "te lo cotizamos".
+- [x] Valor del transporte: ahora va incluido en la tarifa (19-11-2026).
 - [ ] **Definir qué descuentos se ofrecen**, para responder cuando escriban por el cupón.
 - [ ] Confirmar si el sello **Confianza Turística (COVID-19)** sigue vigente. Si no, se quita del footer.
 - [ ] Confirmar si se cobra la entrada a CONAF y si hay guía en inglés.
@@ -220,6 +238,8 @@ Commit `363e6d5`.
 - [ ] Historia real del equipo en *Nosotros*.
 - [ ] Política de cancelación definitiva en *Términos*.
 - [ ] Opcional: logo en SVG vectorial real, y una versión en blanco para fondos oscuros.
+
+- [ ] **Kayak:** fotos propias (hero, collage, galería), y confirmar duración, tiempo remando, horarios, recorrido, qué incluye, edad mínima, temporada y si incluye traslado al punto de partida (buscar TODO en `tour.ts` y `src/i18n/kayak.ts`).
 
 ### Puesta en marcha v2 (en línea)
 - [x] Respaldar el WordPress y vaciar la carpeta del sitio (18-11-2026).

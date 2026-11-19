@@ -10,6 +10,7 @@ import Icon from './Icon.astro';
 import Waves from './Waves.astro';
 import BookingWidget from './BookingWidget.astro';
 import { content } from '../i18n/content';
+import { kayakContent } from '../i18n/kayak';
 import { routes, type Lang } from '../i18n/routes';
 import { images, business } from '../data/tour';
 
@@ -18,6 +19,7 @@ type Block = 'trust' | 'answer' | 'itinerary' | 'includes' | 'gallery' | 'parall
 interface Props { lang: Lang; show: Block[]; withBooking?: boolean }
 const { lang, show, withBooking = false } = Astro.props;
 const t = content[lang];
+const kp = kayakContent[lang].promoHome;
 const es = lang === 'es';
 const has = (b: Block) => show.includes(b);
 // Fondos alternos automáticos según el orden de las secciones visibles.
@@ -45,6 +47,16 @@ const mapQ = encodeURIComponent(`${business.address.street}, ${business.address.
       <div class="collage" data-stagger>
         {images.collage.map((c) => <figure data-reveal="rise"><img src={c.src} alt={c[lang]} width={c.w} height={c.h} loading="lazy" decoding="async" /></figure>)}
       </div>
+      {withBooking && (
+        <a class="kayak-promo" href={routes.kayak[lang]} data-reveal="up">
+          <span class="kayak-promo__art" aria-hidden="true"></span>
+          <span class="kayak-promo__body">
+            <strong class="kayak-promo__h">{kp.h}</strong>
+            <span class="kayak-promo__p">{kp.p}</span>
+            <span class="kayak-promo__foot"><b>{kp.price}</b><span class="kayak-promo__link">{kp.link}</span></span>
+          </span>
+        </a>
+      )}
     </div>
   </section>
 )}

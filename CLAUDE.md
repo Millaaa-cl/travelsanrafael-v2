@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Proyecto
 
-**Versión 2** del sitio de reservas de **travelsanrafael.cl** (reservas por WhatsApp, sin pago en línea ni backend; la v1 con Flow + PHP vive en `C:\Users\holam\travelsanrafael`). Un solo producto: el Tour Full Day Laguna San Rafael (Aysén, Chile). Es bilingüe (ES por defecto en `/`, EN en `/en/`) y está optimizado para SEO, GEO y AEO.
+**Versión 2** del sitio de reservas de **travelsanrafael.cl** (reservas por WhatsApp, sin pago en línea ni backend; la v1 con Flow + PHP vive en `C:\Users\holam\travelsanrafael`). Dos servicios: el Tour Full Day Laguna San Rafael (Aysén, Chile), que es el principal, y el Tour Kayak Capillas de Mármol (desde el 19-11-2026). Es bilingüe (ES por defecto en `/`, EN en `/en/`) y está optimizado para SEO, GEO y AEO.
 
 Es 100 % estático: se publica en un hosting cPanel (Apache) subiendo el contenido de `dist/` a `public_html`. No hay Node, PHP ni base de datos en uso. Su repo es `https://github.com/Millaaa-cl/travelsanrafael-v2` (no hacer push al repo de la v1, `costacarreratravel`).
 
@@ -56,13 +56,15 @@ npm.cmd run package   # build + audit + costacarrera-v2-public_html.zip (usa `ta
   - el total usa `priceFromCLP` / `priceChildCLP`;
   - al enviar, arma el mensaje con `content.ts` → `booking.msg` y abre `https://wa.me/<business.whatsapp>?text=…` con `window.open`, sin `'noopener'` en las features (con él siempre devuelve `null`). Si la ventana se bloquea, navega en la misma pestaña.
   - No hay control de cupos: el operador confirma por chat, y las fechas llenas se agregan a `closed`.
+- **Kayak Capillas de Mármol** (segundo servicio): datos en `tour.ts` → `kayak` (precio por persona, igual para adultos y niños; salida a 5 km del pueblo), textos ES/EN en `src/i18n/kayak.ts`, vista `src/views/KayakView.astro` (ruta `kayak` en `routes.ts`) y JSON-LD con `kayakSchema()`. Se reserva solo por WhatsApp: la tarjeta lateral `.kayak-book` reusa el marco de `.booking`, sin calendario. Hasta que haya fotos, el hero usa `PageHero` con `image={null}` (fondo de color) y la tarjeta "Otros tours" (`OtherTour.astro`, también en la home y la ficha de la Laguna) muestra un degradado. `WhatsAppFab` recibe `service` desde `Base` (según `routeKey`) para mostrar el precio del kayak en la barra móvil. Los datos sin confirmar están marcados con `TODO`.
+- **Google Tag Manager** (`GTM-5QG5Q92C`, en `business.gtmId` de `tour.ts`): `Base.astro` inserta el snippet oficial al inicio del `<head>` y el `<noscript>` al inicio del `<body>` en todas las páginas. Las etiquetas (GA4, etc.) se configuran en el panel de GTM, no en el código. Con `gtmId` vacío se desactiva.
 - `public/.htaccess` fuerza HTTPS y el dominio sin www, redirige con 301 las URLs del WordPress antiguo (`/itinerario`, `/cart`, …) y bloquea archivos ocultos.
 
 ## Datos del tour (confirmados por el cliente)
 
-- **Precios:** $170.000 CLP por adulto y $120.000 CLP por niño de hasta 12 años (`priceFromCLP`, `priceChildCLP` y `childMaxAge` en `tour.ts`; en la v2 son también los del total del widget). El sitio dice "por adulto", no "por persona".
+- **Precios (desde el 19-11-2026):** $190.000 CLP por adulto y $120.000 CLP por niño de hasta 12 años, **con transporte incluido** para todos (`priceFromCLP`, `priceChildCLP` y `childMaxAge` en `tour.ts`; en la v2 son también los del total del widget). El sitio dice "por adulto", no "por persona".
 - **Horario:** salida a las 06:20 desde la esquina de Dagoberto Godoy con Exploradores (Puerto Río Tranquilo); regreso entre las 17:00 y las 18:00.
-- **Itinerario:** 2 h de bus, 2 h de navegación con desayuno, 1 h frente al glaciar con degustación de whisky con hielo milenario, pisco sour o jugo, almuerzo y navegación de retorno con snack, y regreso por tierra. **El precio no incluye transporte**: el bus desde Puerto Río Tranquilo es opcional, con costo adicional (en el widget hay un checkbox que lo agrega al mensaje de WhatsApp).
+- **Itinerario:** 2 h de bus, 2 h de navegación con desayuno, 1 h frente al glaciar con degustación de whisky con hielo milenario, pisco sour o jugo, almuerzo y navegación de retorno con snack, y regreso por tierra. **El precio incluye el transporte**: bus de ida y vuelta desde Puerto Río Tranquilo (antes era opcional; se quitó la casilla del widget).
 
 Los valores que quedan pendientes están marcados con `TODO` en el código: temporada, entrada a CONAF, coordenadas, redes sociales y razón social.
 

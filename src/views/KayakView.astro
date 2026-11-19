@@ -1,0 +1,134 @@
+---
+/**
+ * Ficha del Tour Kayak Capillas de Mármol (segundo servicio).
+ * Mismo esqueleto que la ficha de la Laguna (TourView): hero, franja de datos clave, grilla .tour-layout con
+ * resumen / tarjeta de reserva sticky / detalles, y luego FAQ y otros tours.
+ * La reserva es solo por WhatsApp: la tarjeta lateral reusa el estilo .booking, sin calendario.
+ * TODO: fotos propias del kayak (hero, collage, pasos del itinerario y galería) cuando el cliente las envíe.
+ */
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+import OtherTour from '../components/OtherTour.astro';
+import { kayakContent } from '../i18n/kayak';
+import { content } from '../i18n/content';
+import { routes, type Lang } from '../i18n/routes';
+import { kayak, formatCLP, waLink } from '../data/tour';
+import { kayakSchema, faqSchema, breadcrumbSchema } from '../lib/schema';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const k = kayakContent[lang];
+const t = content[lang];
+const es = lang === 'es';
+const crumbs = [
+  { name: es ? 'Inicio' : 'Home', path: routes.home[lang] },
+  { name: k.name, path: routes.kayak[lang] },
+];
+const wa = waLink(k.card.msg);
+---
+<Base lang={lang} title={k.seo.title} description={k.seo.description} routeKey="kayak"
+  schema={[...kayakSchema(lang, k.name, k.answer.p, k.itinerary.steps), faqSchema(k.faq), breadcrumbSchema(crumbs)]}>
+
+  <PageHero title={k.hero.title} lead={k.hero.lead} crumbs={crumbs} image={null}>
+    <div class="hero__ctas kayak-hero__ctas">
+      <a class="btn btn--primary" href="#reservar">{t.bookNow}</a>
+      <a class="btn btn--ghost" href="#itinerario">{t.seeItinerary}</a>
+      <span class="hero__price"><strong>{formatCLP(kayak.priceCLP)}</strong> {k.perPerson}</span>
+    </div>
+  </PageHero>
+
+  <div class="keyfacts">
+    <div class="container">
+      <dl>
+        <div><dt>{k.keyfacts.duration}</dt><dd><span data-count={kayak.durationHours}>{kayak.durationHours}</span><small>{k.keyfacts.durationUnit}</small></dd></div>
+        <div><dt>{k.keyfacts.from}</dt><dd><span data-count={kayak.distanceKm}>{kayak.distanceKm}</span><small>{k.keyfacts.fromUnit}</small></dd></div>
+        <div><dt>{k.keyfacts.paddle}</dt><dd><span data-count={kayak.paddleHours}>{kayak.paddleHours}</span><small>{k.keyfacts.paddleUnit}</small></dd></div>
+        <div><dt>{k.keyfacts.price}</dt><dd><span data-count={kayak.priceCLP} data-format="clp">{formatCLP(kayak.priceCLP)}</span></dd></div>
+      </dl>
+    </div>
+  </div>
+
+  <div class="container tour-layout">
+    <div class="tour-overview">
+      <h2 data-reveal="up">{k.answer.h}</h2>
+      <p class="answer-lead" data-reveal="up">{k.answer.p}</p>
+      <ul class="highlights" data-stagger>
+        {k.highlights.map((i) => <li data-reveal="up"><span class="ico"><Icon name={i.icon} /></span><div><strong>{i.t}</strong><span>{i.d}</span></div></li>)}
+      </ul>
+    </div>
+
+    <aside class="booking kayak-book" id="reservar" aria-labelledby="h-reservar-kayak">
+      <div class="booking__head">
+        <h2 id="h-reservar-kayak">{k.card.h}</h2>
+        <p class="booking__price" style="margin:0"><strong>{formatCLP(kayak.priceCLP)}</strong><small>{k.perPerson}</small></p>
+      </div>
+      <dl class="kayak-book__list">
+        {k.card.list.map(([dt, dd]) => <div><dt>{dt}</dt><dd>{dd}</dd></div>)}
+      </dl>
+      <a class="btn btn--primary btn--block" href={wa} target="_blank" rel="noopener"><Icon name="whatsapp" />{k.card.cta}</a>
+      <p class="kayak-book__note">{k.card.note}</p>
+    </aside>
+
+    <div class="tour-details">
+      <section class="tour-block" id="itinerario" aria-labelledby="h-itinerario">
+        <h2 id="h-itinerario">{k.itinerary.h}</h2>
+        <p class="lead">{k.itinerary.intro}</p>
+        <ol class="route">
+          {k.itinerary.steps.map((s) => (
+            <li>
+              <time>{s.time}</time>
+              <div><h3>{s.t}</h3><p>{s.d}</p></div>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section class="tour-block" aria-labelledby="h-incluye">
+        <h2 id="h-incluye">{k.includes.h}</h2>
+        <div class="includes" style="margin-top:28px">
+          <div class="includes__card" data-checks>
+            <h3>{k.includes.yesH}</h3>
+            <ul>{k.includes.yes.map((x) => <li><Icon name="check" class="ok" />{x}</li>)}</ul>
+          </div>
+          <div class="includes__card">
+            <h3>{k.includes.noH}</h3>
+            <ul>{k.includes.no.map((x) => <li><Icon name="x" class="no" />{x}</li>)}</ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="tour-block" aria-labelledby="h-llevar">
+        <h2 id="h-llevar">{k.bring.h}</h2>
+        <div class="includes__card kayak-bring" data-checks style="margin-top:28px">
+          <ul>{k.bring.items.map((x) => <li><Icon name="check" class="ok" />{x}</li>)}</ul>
+        </div>
+      </section>
+
+      <section class="tour-block" aria-labelledby="h-practica">
+        <h2 id="h-practica">{k.facts.h}</h2>
+        <p class="lead">{k.facts.lead}</p>
+        <table class="facts">
+          <caption class="visually-hidden">{k.facts.h}</caption>
+          <tbody>{k.facts.rows.map(([th, td]) => <tr><th scope="row">{th}</th><td>{td}</td></tr>)}</tbody>
+        </table>
+      </section>
+    </div>
+  </div>
+
+  <section class="section section--ice" aria-labelledby="h-faq">
+    <div class="container faq-split">
+      <div>
+        <h2 id="h-faq">{k.faqH}</h2>
+        <p class="lead" style="font-size:1.05rem">{es ? '¿No encuentras tu respuesta?' : 'Can’t find your answer?'} <a href={wa} target="_blank" rel="noopener">{es ? 'Escríbenos por WhatsApp' : 'Message us on WhatsApp'}</a>.</p>
+      </div>
+      <div class="faq">
+        {k.faq.map((f, i) => (
+          <details open={i === 0}><summary>{f.q}</summary><div class="faq__body"><p>{f.a}</p></div></details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <OtherTour lang={lang} to="tour" heading={k.other.h} />
+</Base>

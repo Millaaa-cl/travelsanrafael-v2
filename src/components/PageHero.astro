@@ -2,11 +2,12 @@
 import Waves from './Waves.astro';
 import { images } from '../data/tour';
 
-interface Props { title: string; kicker?: string; lead?: string; crumbs?: { name: string; path: string }[]; image?: string }
+// image = null: sin foto de fondo (fondo de color, p. ej. mientras no hay fotos del servicio)
+interface Props { title: string; kicker?: string; lead?: string; crumbs?: { name: string; path: string }[]; image?: string | null }
 const { title, lead, crumbs = [], image = images.parallax.src } = Astro.props;
 ---
 <section class="page-hero">
-  <div class="page-hero__bg"><img src={image} alt="" width="1000" height="1000" decoding="async" /></div>
+  {image ? <div class="page-hero__bg"><img src={image} alt="" width="1000" height="1000" decoding="async" /></div> : <div class="page-hero__bg page-hero__bg--plain" aria-hidden="true"></div>}
   <div class="container">
     {crumbs.length > 1 && (
       <nav class="breadcrumbs" aria-label="Breadcrumb">

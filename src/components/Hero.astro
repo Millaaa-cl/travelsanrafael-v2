@@ -54,7 +54,7 @@ const t = content[lang];
       <div><dt>{lang === 'es' ? 'Duración aproximada' : 'Approximate duration'}</dt><dd><span data-count={tour.durationHours}>{tour.durationHours}</span><small>{lang === 'es' ? ' horas' : ' hours'}</small></dd></div>
       <div><dt>{lang === 'es' ? 'Salida desde Puerto Río Tranquilo' : 'Departure from Puerto Río Tranquilo'}</dt><dd>{tour.departureTime}<small>{lang === 'es' ? ' hrs' : ' am'}</small></dd></div>
       <div><dt>{lang === 'es' ? 'Pasajeros por salida' : 'Passengers per departure'}</dt><dd><span data-count={tour.capacity}>{tour.capacity}</span><small>{lang === 'es' ? ' máx.' : ' max'}</small></dd></div>
-      <div><dt>{lang === 'es' ? 'Precio adulto, sin transporte' : 'Adult price, no transport'}</dt><dd><span data-count={tour.priceFromCLP} data-format="clp">{formatCLP(tour.priceFromCLP)}</span></dd></div>
+      <div><dt>{lang === 'es' ? 'Precio adulto, con transporte' : 'Adult price, with transport'}</dt><dd><span data-count={tour.priceFromCLP} data-format="clp">{formatCLP(tour.priceFromCLP)}</span></dd></div>
     </dl>
   </div>
 </div>

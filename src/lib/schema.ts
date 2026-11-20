@@ -1,5 +1,5 @@
 /** Generadores de datos estructurados JSON-LD (schema.org) para SEO, GEO y AEO. */
-import { business, tour, kayak, logo } from '../data/tour';
+import { business, tour, kayak, kayakImages, logo } from '../data/tour';
 import type { Lang } from '../i18n/routes';
 import { routes } from '../i18n/routes';
 
@@ -171,7 +171,7 @@ export function kayakSchema(lang: Lang, name: string, description: string, itine
     validFrom: '2026-01-01',
     seller: { '@id': orgId },
   };
-  // TODO: agregar "image" cuando haya fotos propias del kayak (Google lo recomienda para Product)
+  const image = [kayakImages.hero, ...kayakImages.gallery].map((i) => abs(i.src));
   return [
     {
       '@context': 'https://schema.org',
@@ -179,6 +179,7 @@ export function kayakSchema(lang: Lang, name: string, description: string, itine
       '@id': `${url}#trip`,
       name,
       description,
+      image,
       url,
       inLanguage: lang === 'es' ? 'es-CL' : 'en',
       touristType: lang === 'es' ? ['Aventura', 'Naturaleza', 'Kayak'] : ['Adventure', 'Nature', 'Kayaking'],
@@ -208,6 +209,7 @@ export function kayakSchema(lang: Lang, name: string, description: string, itine
       '@id': `${url}#product`,
       name,
       description,
+      image,
       brand: { '@type': 'Brand', name: business.name },
       offers: offer,
     },

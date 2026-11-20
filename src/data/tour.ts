@@ -146,3 +146,15 @@ export const images: {
   map: img('lancha-rapida-en-la-orilla.jpg', 1000, 1000, 'Lancha lista para zarpar', 'Boat ready to sail'),
   cta: img('tempano-frente-glaciar-san-rafael.jpg', 1600, 1200, 'Témpano frente al Glaciar San Rafael', 'Ice floe in front of the San Rafael Glacier'),
 };
+
+/** Fotos del Tour Kayak (enviadas por el cliente el 20-11-2026, originales en Desktop\imagenes kayak). */
+export const kayakImages = {
+  hero: img('kayak-capillas-de-marmol-interior-caverna.jpg', 1600, 900, 'Interior de una caverna de las Capillas de Mármol sobre el Lago General Carrera', 'Inside a Marble Caves cavern over General Carrera Lake'),
+  og: '/images/og-kayak-capillas-de-marmol.jpg',
+  // La primera es la grande de la galería; también se usa en la promo de la home y en la tarjeta "Otros tours".
+  gallery: [
+    img('kayak-grupo-remando-capillas-de-marmol.jpg', 1600, 900, 'Grupo en kayak frente a las Capillas de Mármol en el Lago General Carrera', 'Group kayaking in front of the Marble Caves on General Carrera Lake'),
+    { ...img('capilla-de-marmol-lago-general-carrera.jpg', 960, 1280, 'Capilla de Mármol, islote de mármol sobre el agua turquesa del lago', 'Marble Chapel, a marble islet on the turquoise lake water'), pos: '50% 55%' },
+    img('kayaks-en-la-orilla-lago-general-carrera.jpg', 1440, 1080, 'Grupo listo para remar, con los kayaks en la orilla del Lago General Carrera', 'Group ready to paddle, with the kayaks on the shore of General Carrera Lake'),
+  ] as Img[],
+};

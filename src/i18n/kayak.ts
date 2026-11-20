@@ -89,6 +89,7 @@ export const kayakContent = {
       { q: '¿Pueden ir niños?', a: 'Sí, acompañados por un adulto y con chaleco salvavidas. Pagan lo mismo que un adulto. Escríbenos por WhatsApp para confirmar la edad mínima.' },
       { q: '¿Qué diferencia hay con el tour a la Laguna San Rafael?', a: 'El kayak es una salida de medio día muy cerca de Puerto Río Tranquilo, remando en el Lago General Carrera. El tour a la Laguna San Rafael es de día completo: viaja 90 km hacia el interior y navega en lancha hasta el glaciar.' },
     ],
+    gallery: { h: 'Fotos del tour en kayak', lead: 'Fotos reales de nuestras salidas. Toca una para verla en grande.' },
     other: { h: 'Otros tours', lagunaT: 'Tour Full Day Laguna San Rafael', lagunaD: 'Navega entre icebergs hasta el frente del Glaciar San Rafael, con desayuno, almuerzo y whisky con hielo milenario.', link: 'Ver el tour' },
     // Bloque corto bajo el collage de la home (Sections.astro, solo con withBooking)
     promoHome: { h: 'Suma una tarde de kayak en las Capillas de Mármol', p: `Remada guiada entre cavernas de mármol, a ${km} km de Puerto Río Tranquilo. Sin experiencia previa.`, price: `${price} por persona`, link: 'Conoce el tour en kayak' },
@@ -173,6 +174,7 @@ export const kayakContent = {
       { q: 'Can children join?', a: 'Yes, accompanied by an adult and wearing a life vest. They pay the same as adults. Message us on WhatsApp to confirm the minimum age.' },
       { q: 'How is it different from the San Rafael Lagoon tour?', a: 'The kayak is a half-day trip right next to Puerto Río Tranquilo, paddling on Lake General Carrera. The San Rafael Lagoon tour is a full day: it drives 90 km inland and sails by boat to the glacier.' },
     ],
+    gallery: { h: 'Kayak tour photos', lead: 'Real photos from our trips. Tap one to see it full size.' },
     other: { h: 'Other tours', lagunaT: 'San Rafael Lagoon Full-Day Tour', lagunaD: 'Sail among icebergs to the front of the San Rafael Glacier, with breakfast, lunch and whisky on ancient glacier ice.', link: 'See the tour' },
     promoHome: { h: 'Add an afternoon kayaking the Marble Caves', p: `A guided paddle among marble caves, ${km} km from Puerto Río Tranquilo. No experience needed.`, price: `${price} per person`, link: 'See the kayak tour' },
     cardHome: { t: 'Marble Caves kayak', d: `Paddle among marble caves on Lake General Carrera, ${km} km from Puerto Río Tranquilo. ${price} per person.`, link: 'See the kayak tour' },

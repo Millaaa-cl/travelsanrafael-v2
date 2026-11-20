@@ -4,7 +4,7 @@
  * Mismo esqueleto que la ficha de la Laguna (TourView): hero, franja de datos clave, grilla .tour-layout con
  * resumen / tarjeta de reserva sticky / detalles, y luego FAQ y otros tours.
  * La reserva es solo por WhatsApp: la tarjeta lateral reusa el estilo .booking, sin calendario.
- * TODO: fotos propias del kayak (hero, collage, pasos del itinerario y galería) cuando el cliente las envíe.
+ * Fotos en tour.ts → kayakImages (hero, galería de 3 y imagen para redes).
  */
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
@@ -13,7 +13,7 @@ import OtherTour from '../components/OtherTour.astro';
 import { kayakContent } from '../i18n/kayak';
 import { content } from '../i18n/content';
 import { routes, type Lang } from '../i18n/routes';
-import { kayak, formatCLP, waLink } from '../data/tour';
+import { kayak, kayakImages, formatCLP, waLink } from '../data/tour';
 import { kayakSchema, faqSchema, breadcrumbSchema } from '../lib/schema';
 
 interface Props { lang: Lang }
@@ -27,10 +27,10 @@ const crumbs = [
 ];
 const wa = waLink(k.card.msg);
 ---
-<Base lang={lang} title={k.seo.title} description={k.seo.description} routeKey="kayak"
+<Base lang={lang} title={k.seo.title} description={k.seo.description} routeKey="kayak" image={kayakImages.og}
   schema={[...kayakSchema(lang, k.name, k.answer.p, k.itinerary.steps), faqSchema(k.faq), breadcrumbSchema(crumbs)]}>
 
-  <PageHero title={k.hero.title} lead={k.hero.lead} crumbs={crumbs} image={null}>
+  <PageHero title={k.hero.title} lead={k.hero.lead} crumbs={crumbs} image={kayakImages.hero.src}>
     <div class="hero__ctas kayak-hero__ctas">
       <a class="btn btn--primary" href="#reservar">{t.bookNow}</a>
       <a class="btn btn--ghost" href="#itinerario">{t.seeItinerary}</a>
@@ -115,6 +115,25 @@ const wa = waLink(k.card.msg);
       </section>
     </div>
   </div>
+
+  <section class="section" aria-labelledby="h-galeria">
+    <div class="container">
+      <div class="section-head">
+        <h2 id="h-galeria">{k.gallery.h}</h2>
+        <p class="lead">{k.gallery.lead}</p>
+      </div>
+      <div class="gallery" data-stagger>
+        {kayakImages.gallery.map((g) => (
+          <figure data-reveal="rise">
+            <button type="button" data-lightbox={g.src} data-alt={g[lang]} aria-label={(es ? 'Ampliar: ' : 'Enlarge: ') + g[lang]}>
+              <img src={g.src} alt={g[lang]} width={g.w} height={g.h} loading="lazy" decoding="async" style={g.pos ? `object-position:${g.pos}` : undefined} />
+            </button>
+            <figcaption>{g[lang]}</figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
 
   <section class="section section--ice" aria-labelledby="h-faq">
     <div class="container faq-split">

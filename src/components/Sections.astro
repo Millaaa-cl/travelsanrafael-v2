@@ -12,7 +12,7 @@ import BookingWidget from './BookingWidget.astro';
 import { content } from '../i18n/content';
 import { kayakContent } from '../i18n/kayak';
 import { routes, type Lang } from '../i18n/routes';
-import { images, business } from '../data/tour';
+import { images, business, kayakImages } from '../data/tour';
 
 type Block = 'trust' | 'answer' | 'itinerary' | 'includes' | 'gallery' | 'parallax' | 'boat' | 'reviews' | 'faq' | 'map' | 'cta';
 // withBooking: muestra el widget de reserva junto al bloque "answer" (lo usa la home; la ficha del tour tiene su propio layout)
@@ -49,7 +49,7 @@ const mapQ = encodeURIComponent(`${business.address.street}, ${business.address.
       </div>
       {withBooking && (
         <a class="kayak-promo" href={routes.kayak[lang]} data-reveal="up">
-          <span class="kayak-promo__art" aria-hidden="true"></span>
+          <img class="kayak-promo__art" src={kayakImages.gallery[0].src} alt="" width="160" height="90" loading="lazy" decoding="async" />
           <span class="kayak-promo__body">
             <strong class="kayak-promo__h">{kp.h}</strong>
             <span class="kayak-promo__p">{kp.p}</span>

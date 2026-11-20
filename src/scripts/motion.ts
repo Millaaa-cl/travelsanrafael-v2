@@ -141,20 +141,41 @@ document.querySelectorAll<HTMLElement>('[data-carousel]').forEach((track) => {
   track.addEventListener('pointermove', (e) => { if (down) track.scrollLeft = s0 - (e.clientX - x0); });
 });
 
-/* ---------- FAQ: apertura y cierre animados ---------- */
-document.querySelectorAll<HTMLDetailsElement>('.faq details').forEach((d) => {
+/* ---------- FAQ y acordeón del kayak: apertura y cierre animados ----------
+   En el acordeón (.acc) los <details> comparten "name": sin JS el navegador ya abre uno a la vez.
+   Con JS se quita "name" (si no, el navegador cerraría el otro de golpe) y se cierra el abierto con animación. */
+const bodyOf = (d: HTMLDetailsElement) => d.querySelector<HTMLElement>(':scope > .faq__body, :scope > .acc__body');
+const closeAnimated = (d: HTMLDetailsElement) => {
+  const body = bodyOf(d);
+  if (!body) { d.open = false; return; }
+  body.animate([{ height: body.scrollHeight + 'px', opacity: 1 }, { height: '0px', opacity: 0 }], { duration: 300, easing: 'ease' }).onfinish = () => { d.open = false; };
+};
+document.querySelectorAll<HTMLDetailsElement>('.faq details, .acc details').forEach((d) => {
   const summary = d.querySelector('summary')!;
-  const body = d.querySelector<HTMLElement>('.faq__body');
+  const body = bodyOf(d);
   if (!body || reduce) return;
+  const group = d.getAttribute('name');
+  const siblings = group ? Array.from(document.querySelectorAll<HTMLDetailsElement>(`details[name="${group}"]`)) : [];
+  queueMicrotask(() => d.removeAttribute('name'));
   summary.addEventListener('click', (e) => {
     e.preventDefault();
     if (d.open) {
-      const h = body.scrollHeight;
-      body.animate([{ height: h + 'px', opacity: 1 }, { height: '0px', opacity: 0 }], { duration: 300, easing: 'ease' }).onfinish = () => { d.open = false; };
+      closeAnimated(d);
     } else {
+      siblings.forEach((o) => { if (o !== d && o.open) closeAnimated(o); });
       d.open = true;
       const h = body.scrollHeight;
       body.animate([{ height: '0px', opacity: 0 }, { height: h + 'px', opacity: 1 }], { duration: 350, easing: 'cubic-bezier(.22,.8,.2,1)' });
     }
   });
 });
+// Un enlace a un <details> del acordeón (p. ej. "Ver itinerario" → #bitacora) lo abre al llegar.
+const openTarget = (hash: string) => {
+  const el = hash.length > 1 ? document.getElementById(decodeURIComponent(hash.slice(1))) : null;
+  if (el instanceof HTMLDetailsElement && !el.open) el.querySelector('summary')?.click();
+};
+document.addEventListener('click', (e) => {
+  const a = (e.target as Element).closest?.('a[href^="#"]');
+  if (a) openTarget(a.getAttribute('href')!);
+});
+openTarget(location.hash);

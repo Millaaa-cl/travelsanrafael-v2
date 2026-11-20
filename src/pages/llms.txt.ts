@@ -30,12 +30,14 @@ export function GET() {
 ## Datos clave del Tour Kayak Capillas de Mármol
 - Página: ${u(routes.kayak.es)}
 - Precio: ${formatCLP(kayak.priceCLP)} por persona (igual para adultos y niños)
-- Punto de partida: a ${kayak.distanceKm} km de Puerto Río Tranquilo, a orillas del Lago General Carrera
-- Duración: aprox. ${kayak.durationHours} horas, unas ${kayak.paddleHours} remando
+- Punto de encuentro: agencia Costa Carrera Travel, Puerto Río Tranquilo; traslado incluido a la bahía, a ${kayak.distanceKm} km
+- Salidas: ${kayak.departures.join(', ')} hrs (recomendadas las de la mañana: ${kayak.recommended.join(' y ')}, con el lago más calmo)
+- Duración: aprox. ${kayak.durationHours} horas, unos ${kayak.paddleMinutes} minutos remando
 - Recorrido: Cavernas, Catedral y Capilla de Mármol
-- Incluye: ${kayakContent.es.includes.yes.join('; ')}
+- Incluye: ${kayakContent.es.detail.inc.items.map((x) => x.replace(/\.$/, '')).join('; ')}
+- No incluye: ${kayakContent.es.detail.inc.no.join('; ')}
 - Experiencia: no se necesita experiencia previa
-- Reserva: por WhatsApp; horario a coordinar según el viento
+- Reserva: por WhatsApp
 
 ## Contacto
 - Dirección: ${business.address.street}, ${business.address.locality}, ${business.address.region}, Chile

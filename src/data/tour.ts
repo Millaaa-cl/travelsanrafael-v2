@@ -69,8 +69,10 @@ export const kayak = {
   priceCLP: 55000,          // por persona, adultos y niños (confirmado)
   currency: 'CLP',
   distanceKm: 5,            // el punto de partida está a 5 km de Puerto Río Tranquilo (confirmado)
-  durationHours: 3,         // TODO: confirmar duración total con el cliente
-  paddleHours: 2,           // TODO: confirmar tiempo remando
+  durationHours: 3,         // 06:00 a 09:00 en la salida de referencia (confirmado 20-11-2026)
+  paddleMinutes: 90,        // 06:50 a 08:20 en el agua (confirmado)
+  departures: ['06:00', '10:30', '14:00', '17:30'],   // salidas diarias desde la agencia (confirmado)
+  recommended: ['06:00', '10:30'],                     // por la mañana el lago suele estar más calmo
   season: tour.season,      // TODO: confirmar si opera en la misma temporada que la Laguna
 };
 

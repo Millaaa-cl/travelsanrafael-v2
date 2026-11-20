@@ -34,7 +34,7 @@ const items = [
     </nav>
     <div class="header-actions">
       <details class="lang-menu">
-        <summary class="lang-link" aria-label={`${t.langSwitch}: ${locales[lang].name}`}>{lang.toUpperCase()}</summary>
+        <summary class="lang-link">{lang.toUpperCase()}<span class="visually-hidden"> — {t.langSwitch}: {locales[lang].name}</span></summary>
         <ul>
           {others.map((o) => <li><a href={o.href} hreflang={locales[o.l].html} lang={locales[o.l].html}><b>{o.l.toUpperCase()}</b>{locales[o.l].name}</a></li>)}
         </ul>

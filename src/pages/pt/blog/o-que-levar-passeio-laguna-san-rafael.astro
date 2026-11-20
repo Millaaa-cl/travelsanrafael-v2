@@ -1,0 +1,37 @@
+---
+import ProsePage from '../../../views/ProsePage.astro';
+import { routes } from '../../../i18n/routes';
+---
+<ProsePage lang="pt" routeKey="postPack" parent={{ name: 'Blog', path: routes.blog.pt }} article={{ date: '2026-11-17' }}
+  title="O que levar no passeio à Laguna San Rafael: lista completa"
+  description="Lista do que levar no passeio à Laguna San Rafael: roupas em camadas, impermeáveis, acessórios e dicas contra enjoo para um dia de navegação na Patagônia."
+  h1="O que levar no passeio à Laguna San Rafael" kicker="Lista de bagagem">
+  <p><strong>Resposta rápida:</strong> leve roupas em camadas (segunda pele térmica, fleece e jaqueta impermeável), gorro, luvas, óculos de sol, protetor solar, uma mochila pequena, câmera com bateria extra e remédio para enjoo, se precisar. Coletes salva-vidas e almoço estão incluídos.</p>
+
+  <h2>Roupas</h2>
+  <ul>
+    <li><strong>Segunda pele térmica</strong> (evite algodão, que retém umidade).</li>
+    <li><strong>Camada intermediária</strong>: fleece ou jaqueta de pluma.</li>
+    <li><strong>Jaqueta e calça impermeáveis</strong>: o vento perto do glaciar é frio.</li>
+    <li>Gorro, gola e luvas, mesmo no verão.</li>
+    <li>Calçado confortável e antiderrapante.</li>
+  </ul>
+
+  <h2>Acessórios</h2>
+  <ul>
+    <li>Óculos de sol e protetor solar: o reflexo do gelo e da água é forte.</li>
+    <li>Câmera ou celular, bateria extra e bolsa estanque ou capa de chuva.</li>
+    <li>Binóculos para observar aves e lobos-marinhos.</li>
+    <li>Garrafa de água reutilizável.</li>
+    <li>Dinheiro em espécie para gorjetas ou compras.</li>
+  </ul>
+
+  <h2>Saúde e conforto</h2>
+  <ul>
+    <li>Remédio para enjoo se você costuma enjoar: tome antes de embarcar.</li>
+    <li>Seus medicamentos pessoais.</li>
+    <li>Avise-nos na reserva se tiver alergias ou alguma restrição alimentar, para adaptarmos o almoço.</li>
+  </ul>
+
+  <div class="callout"><p><strong>O que você não precisa levar:</strong> colete salva-vidas, almoço ou transporte. Tudo está incluído no <a href={routes.tour.pt}>passeio de dia inteiro</a>, inclusive o ônibus de ida e volta desde Puerto Río Tranquilo.</p></div>
+</ProsePage>

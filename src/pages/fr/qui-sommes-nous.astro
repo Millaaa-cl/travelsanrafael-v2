@@ -1,0 +1,35 @@
+---
+import ProsePage from '../../views/ProsePage.astro';
+import { business, tour } from '../../data/tour';
+---
+<ProsePage lang="fr" routeKey="about"
+  title="Qui sommes-nous : opérateur local de la lagune San Rafael"
+  description="Nous sommes un opérateur local d’Aysén spécialisé dans les sorties en bateau vers la lagune San Rafael. Découvrez notre équipe, notre bateau et nos règles de sécurité."
+  h1="Qui sommes-nous" kicker={business.name}
+  lead="Nous sommes une équipe locale de la région d’Aysén, qui fait découvrir l’un des glaciers les plus impressionnants de Patagonie en toute sécurité et de façon responsable.">
+  <h2>Un opérateur local d’Aysén</h2>
+  <p>{business.name} fait partie de {business.legalName} et opère depuis {business.address.locality}. Nous connaissons les canaux, la météo et l’histoire de la région parce que nous y vivons. Cette expérience se voit à chaque sortie : nous choisissons l’itinéraire selon les conditions du jour et la sécurité passe toujours en premier.</p>
+
+  <h2>Notre équipe</h2>
+  <ul>
+    <li><strong>Pilotes de bateau</strong> habilités par l’Autorité maritime chilienne (DIRECTEMAR).</li>
+    <li><strong>Guides certifiés</strong> formés aux premiers secours et à l’interprétation du patrimoine naturel.</li>
+    <li><strong>Équipe de bureau</strong> disponible tous les jours, {business.hours}.</li>
+  </ul>
+
+  <h2>Sécurité</h2>
+  <p>Notre bateau transporte jusqu’à {tour.capacity} passagers et possède une coque en polyéthylène haute densité (PEHD). Il est équipé de gilets de sauvetage pour tous, d’une radio VHF, d’une trousse de premiers secours et de tout l’équipement de sécurité obligatoire. Nous ne naviguons pas si l’Autorité maritime ferme le port ou si les conditions ne sont pas sûres.</p>
+
+  <h2>Tourisme responsable</h2>
+  <p>Le parc national Laguna San Rafael est une réserve de biosphère de l’UNESCO. Nous gardons des groupes réduits, ne laissons aucun déchet et maintenons une distance respectueuse avec la faune et le front du glacier.</p>
+
+  <h2>Informations sur l’entreprise</h2>
+  <table>
+    <tbody>
+      <tr><th>Entreprise</th><td>{business.legalName}</td></tr>
+      <tr><th>Adresse</th><td>{business.address.street}, {business.address.locality}, {business.address.region}, Chili</td></tr>
+      <tr><th>Téléphone</th><td>{business.phoneDisplay.join(' · ')}</td></tr>
+      <tr><th>E-mail</th><td><a href={`mailto:${business.email}`}>{business.email}</a></td></tr>
+    </tbody>
+  </table>
+</ProsePage>

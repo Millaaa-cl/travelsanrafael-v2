@@ -2,7 +2,7 @@
 /** Plantilla para páginas de texto (cómo llegar, nosotros, términos, blog). */
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
-import { routes, type Lang, type RouteKey } from '../i18n/routes';
+import { routes, locales, pick, type Lang, type RouteKey } from '../i18n/routes';
 import { content } from '../i18n/content';
 import { breadcrumbSchema, articleSchema } from '../lib/schema';
 
@@ -22,14 +22,15 @@ interface Props {
 }
 const { lang, routeKey, title, description, h1, kicker, lead, parent, article, schema = [], noindex, cta = true } = Astro.props;
 const t = content[lang];
+const tx = pick(lang);
 const path = routes[routeKey][lang];
-const crumbs = [{ name: lang === 'es' ? 'Inicio' : 'Home', path: routes.home[lang] }, ...(parent ? [parent] : []), { name: h1, path }];
+const crumbs = [{ name: tx('Inicio', 'Home', 'Accueil', 'Início'), path: routes.home[lang] }, ...(parent ? [parent] : []), { name: h1, path }];
 const extra = [breadcrumbSchema(crumbs), ...(article ? [articleSchema({ title: h1, description, path, lang, ...article })] : []), ...schema];
-const fmt = (d: string) => new Date(d + 'T12:00:00').toLocaleDateString(lang === 'es' ? 'es-CL' : 'en-US', { day: 'numeric', month: 'long', year: 'numeric' });
+const fmt = (d: string) => new Date(d + 'T12:00:00').toLocaleDateString(locales[lang].intl, { day: 'numeric', month: 'long', year: 'numeric' });
 ---
 <Base lang={lang} title={title} description={description} routeKey={routeKey} schema={extra} noindex={noindex} ogType={article ? 'article' : 'website'}>
   <PageHero title={h1} kicker={kicker} lead={lead} crumbs={crumbs}>
-    {article && <p style="font-size:.9rem;opacity:.8;margin-top:1rem;">{lang === 'es' ? 'Actualizado' : 'Updated'}: <time datetime={article.updated ?? article.date}>{fmt(article.updated ?? article.date)}</time></p>}
+    {article && <p style="font-size:.9rem;opacity:.8;margin-top:1rem;">{tx('Actualizado', 'Updated', 'Mis à jour', 'Atualizado')}: <time datetime={article.updated ?? article.date}>{fmt(article.updated ?? article.date)}</time></p>}
   </PageHero>
   <section class="section">
     <div class="container">

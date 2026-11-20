@@ -1,0 +1,35 @@
+---
+import ProsePage from '../../../views/ProsePage.astro';
+import { routes } from '../../../i18n/routes';
+---
+<ProsePage lang="pt" routeKey="postGlacier" parent={{ name: 'Blog', path: routes.blog.pt }} article={{ date: '2026-11-17' }}
+  title="Glaciar San Rafael: dados, história e como visitar"
+  description="Dados essenciais sobre o Glaciar San Rafael e o Parque Nacional Laguna San Rafael: Campo de Gelo Norte, Monte San Valentín, Reserva da Biosfera da UNESCO e como visitar."
+  h1="Glaciar San Rafael: dados, história e por que visitar" kicker="Conheça o destino">
+  <p><strong>Resposta rápida:</strong> o Glaciar San Rafael desce do <strong>Campo de Gelo Norte da Patagônia</strong> até a Laguna San Rafael, na Região de Aysén, no Chile. É um dos glaciares que chegam ao mar mais próximos da linha do Equador no mundo e fica dentro do <strong>Parque Nacional Laguna San Rafael</strong>, criado em 1959 e declarado Reserva da Biosfera pela UNESCO em 1979.</p>
+
+  <h2>Dados principais</h2>
+  <table>
+    <tbody>
+      <tr><th>Localização</th><td>Parque Nacional Laguna San Rafael, Região de Aysén, Chile</td></tr>
+      <tr><th>Origem</th><td>Campo de Gelo Norte da Patagônia, o segundo maior campo de gelo da Patagônia</td></tr>
+      <tr><th>Pico próximo</th><td>Monte San Valentín, a montanha mais alta da Patagônia (cerca de 4.000 m)</td></tr>
+      <tr><th>Proteção</th><td>Parque Nacional desde 1959, Reserva da Biosfera da UNESCO desde 1979</td></tr>
+      <tr><th>Acesso</th><td>Somente por água ou por ar. O jeito mais fácil é o passeio de lancha saindo de Puerto Río Tranquilo</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Um glaciar em retrocesso</h2>
+  <p>O Glaciar San Rafael recuou vários quilômetros desde o século XIX, e sua frente muda a cada ano. A bordo, os guias explicam como os glaciares se formam, por que o gelo parece azul e o que o seu recuo nos diz sobre as mudanças climáticas. Por isso visitá-lo hoje é uma experiência única.</p>
+
+  <h2>História</h2>
+  <p>Exploradores espanhóis navegaram pela laguna no fim do século XVIII, seguidos de expedições científicas e cartográficas. No século XX houve um projeto inacabado de abrir um canal pelo Istmo de Ofqui para ligar a laguna ao Golfo de Penas. Hoje a área é protegida e visitada com operadoras autorizadas.</p>
+
+  <h2>O que você vai ver</h2>
+  <ul>
+    <li>Icebergs de formas surpreendentes e tons de azul flutuando na laguna.</li>
+    <li>A frente do glaciar e, com sorte, desprendimentos de gelo.</li>
+    <li>Floresta temperada da Patagônia, cachoeiras e fauna como aves marinhas e lobos-marinhos.</li>
+  </ul>
+  <p><a class="btn btn--primary" href={routes.tour.pt + '#reservar'}>Reservar o passeio ao glaciar</a></p>
+</ProsePage>

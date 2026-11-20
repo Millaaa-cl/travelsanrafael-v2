@@ -12,7 +12,7 @@ import Icon from '../components/Icon.astro';
 import OtherTour from '../components/OtherTour.astro';
 import { kayakContent } from '../i18n/kayak';
 import { content } from '../i18n/content';
-import { routes, type Lang } from '../i18n/routes';
+import { routes, pick, type Lang } from '../i18n/routes';
 import { kayak, kayakImages, formatCLP, waLink } from '../data/tour';
 import { kayakSchema, faqSchema, breadcrumbSchema } from '../lib/schema';
 
@@ -20,9 +20,9 @@ interface Props { lang: Lang }
 const { lang } = Astro.props;
 const k = kayakContent[lang];
 const t = content[lang];
-const es = lang === 'es';
+const tx = pick(lang);
 const crumbs = [
-  { name: es ? 'Inicio' : 'Home', path: routes.home[lang] },
+  { name: tx('Inicio', 'Home', 'Accueil', 'Início'), path: routes.home[lang] },
   { name: k.name, path: routes.kayak[lang] },
 ];
 const wa = waLink(k.card.msg);
@@ -133,7 +133,7 @@ const d = k.detail;
       <div class="gallery" data-stagger>
         {kayakImages.gallery.map((g) => (
           <figure data-reveal="rise">
-            <button type="button" data-lightbox={g.src} data-alt={g[lang]} aria-label={(es ? 'Ampliar: ' : 'Enlarge: ') + g[lang]}>
+            <button type="button" data-lightbox={g.src} data-alt={g[lang]} aria-label={tx('Ampliar: ', 'Enlarge: ', 'Agrandir : ', 'Ampliar: ') + g[lang]}>
               <img src={g.src} alt={g[lang]} width={g.w} height={g.h} loading="lazy" decoding="async" style={g.pos ? `object-position:${g.pos}` : undefined} />
             </button>
             <figcaption>{g[lang]}</figcaption>
@@ -147,7 +147,7 @@ const d = k.detail;
     <div class="container faq-split">
       <div>
         <h2 id="h-faq">{k.faqH}</h2>
-        <p class="lead" style="font-size:1.05rem">{es ? '¿No encuentras tu respuesta?' : 'Can’t find your answer?'} <a href={wa} target="_blank" rel="noopener">{es ? 'Escríbenos por WhatsApp' : 'Message us on WhatsApp'}</a>.</p>
+        <p class="lead" style="font-size:1.05rem">{tx('¿No encuentras tu respuesta?', 'Can’t find your answer?', 'Vous ne trouvez pas votre réponse ?', 'Não encontrou sua resposta?')} <a href={wa} target="_blank" rel="noopener">{tx('Escríbenos por WhatsApp', 'Message us on WhatsApp', 'Écrivez-nous sur WhatsApp', 'Fale conosco pelo WhatsApp')}</a>.</p>
       </div>
       <div class="faq">
         {k.faq.map((f, i) => (

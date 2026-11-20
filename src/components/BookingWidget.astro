@@ -5,23 +5,24 @@
  * confirma los cupos y coordina el pago por chat. JS vanilla, sin frameworks ni llamadas al servidor.
  */
 import { content } from '../i18n/content';
-import { routes, type Lang } from '../i18n/routes';
+import { routes, locales, pick, type Lang } from '../i18n/routes';
 import Icon from './Icon.astro';
 import { business, tour, formatCLP } from '../data/tour';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const t = content[lang].booking;
+const tx = pick(lang);
 const i18n = {
-  ...t, locale: lang === 'es' ? 'es-CL' : 'en-US', lang,
+  ...t, locale: locales[lang].intl, lang,
   wa: business.whatsapp, priceAdult: tour.priceFromCLP, priceChild: tour.priceChildCLP, cfg: tour.booking,
 };
 ---
 <aside class="booking" id="reservar" aria-labelledby="h-booking" data-i18n={JSON.stringify(i18n)}>
   <div class="booking__head">
     <h2 id="h-booking">{t.h}</h2>
-    <p class="booking__price" style="margin:0"><strong>{formatCLP(tour.priceFromCLP)}</strong><small>{lang === 'es' ? 'por adulto' : 'per adult'}</small></p>
-    <p class="booking__child">{lang === 'es' ? `Niños hasta ${tour.childMaxAge} años` : `Children up to ${tour.childMaxAge}`} <strong>{formatCLP(tour.priceChildCLP)}</strong></p>
+    <p class="booking__price" style="margin:0"><strong>{formatCLP(tour.priceFromCLP)}</strong><small>{tx('por adulto', 'per adult', 'par adulte', 'por adulto')}</small></p>
+    <p class="booking__child">{tx(`Niños hasta ${tour.childMaxAge} años`, `Children up to ${tour.childMaxAge}`, `Enfants jusqu’à ${tour.childMaxAge} ans`, `Crianças até ${tour.childMaxAge} anos`)} <strong>{formatCLP(tour.priceChildCLP)}</strong></p>
     <p class="booking__notice"><Icon name="info" />{t.transportNote}</p>
   </div>
 

@@ -4,23 +4,28 @@ import Hero from '../components/Hero.astro';
 import Sections from '../components/Sections.astro';
 import Promo from '../components/Promo.astro';
 import { content } from '../i18n/content';
-import { routes, type Lang } from '../i18n/routes';
+import { routes, pick, type Lang } from '../i18n/routes';
 import { tour, formatCLP } from '../data/tour';
 import { tourSchema, faqSchema } from '../lib/schema';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const t = content[lang];
-const es = lang === 'es';
-const seo = es
-  ? { title: 'Tour Laguna San Rafael desde Puerto Río Tranquilo | Reserva online', description: `Full day en lancha rápida hasta el Glaciar San Rafael: desayuno, almuerzo y whisky con hielo milenario. Adulto ${formatCLP(tour.priceFromCLP)}, niño ${formatCLP(tour.priceChildCLP)}, con transporte. Reserva por WhatsApp.` }
-  : { title: 'San Rafael Lagoon Tour from Puerto Río Tranquilo | Book online', description: `Speedboat tour to the San Rafael Glacier with breakfast, lunch and whisky on glacier ice. Adult ${formatCLP(tour.priceFromCLP)}, child ${formatCLP(tour.priceChildCLP)}, transport included. Book on WhatsApp.` };
+const tx = pick(lang);
+const adult = formatCLP(tour.priceFromCLP);
+const child = formatCLP(tour.priceChildCLP);
+const seo = tx(
+  { title: 'Tour Laguna San Rafael desde Puerto Río Tranquilo | Reserva online', description: `Full day en lancha rápida hasta el Glaciar San Rafael: desayuno, almuerzo y whisky con hielo milenario. Adulto ${adult}, niño ${child}, con transporte. Reserva por WhatsApp.` },
+  { title: 'San Rafael Lagoon Tour from Puerto Río Tranquilo | Book online', description: `Speedboat tour to the San Rafael Glacier with breakfast, lunch and whisky on glacier ice. Adult ${adult}, child ${child}, transport included. Book on WhatsApp.` },
+  { title: 'Excursion lagune San Rafael depuis Puerto Río Tranquilo', description: `Bateau rapide jusqu’au glacier San Rafael : petit-déjeuner, déjeuner et whisky sur glace millénaire. Adulte ${adult}, enfant ${child}, transport inclus. Réservez sur WhatsApp.` },
+  { title: 'Passeio à Laguna San Rafael saindo de Puerto Río Tranquilo', description: `Lancha rápida até o Glaciar San Rafael: café da manhã, almoço e uísque com gelo milenar. Adulto ${adult}, criança ${child}, com transporte. Reserve pelo WhatsApp.` },
+);
 ---
 <Base lang={lang} title={seo.title} description={seo.description} routeKey="home"
   schema={[...tourSchema(lang, t.answer.p, t.itinerary.steps), faqSchema(t.faq)]}>
   <Hero lang={lang}
-    over={es ? 'Navega entre icebergs hasta el' : 'Sail among icebergs to the'}
-    title={es ? 'Glaciar San Rafael' : 'San Rafael Glacier'}
+    over={tx('Navega entre icebergs hasta el', 'Sail among icebergs to the', 'Naviguez parmi les icebergs jusqu’au', 'Navegue entre icebergs até o')}
+    title={tx('Glaciar San Rafael', 'San Rafael Glacier', 'Glacier San Rafael', 'Glaciar San Rafael')}
     lead={t.hero.lead}
     bookHref="#reservar"
     secondary={{ href: '#itinerario', label: t.seeItinerary }} />

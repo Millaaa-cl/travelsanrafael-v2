@@ -11,7 +11,7 @@ import Waves from './Waves.astro';
 import BookingWidget from './BookingWidget.astro';
 import { content } from '../i18n/content';
 import { kayakContent } from '../i18n/kayak';
-import { routes, type Lang } from '../i18n/routes';
+import { routes, pick, type Lang } from '../i18n/routes';
 import { images, business, kayakImages } from '../data/tour';
 
 type Block = 'trust' | 'answer' | 'itinerary' | 'includes' | 'gallery' | 'parallax' | 'boat' | 'reviews' | 'faq' | 'map' | 'cta';
@@ -20,7 +20,7 @@ interface Props { lang: Lang; show: Block[]; withBooking?: boolean }
 const { lang, show, withBooking = false } = Astro.props;
 const t = content[lang];
 const kp = kayakContent[lang].promoHome;
-const es = lang === 'es';
+const tx = pick(lang);
 const has = (b: Block) => show.includes(b);
 // Fondos alternos automáticos según el orden de las secciones visibles.
 const flow = show.filter((b) => !['trust', 'cta', 'parallax'].includes(b));
@@ -111,7 +111,7 @@ const mapQ = encodeURIComponent(`${business.address.street}, ${business.address.
 {has('parallax') && (
   <div class="parallax" data-parallax>
     <img src={images.parallax.src} alt="" width={images.parallax.w} height={images.parallax.h} loading="lazy" decoding="async" />
-    <blockquote data-reveal="up">{es ? 'Una hora frente a un muro de hielo milenario' : 'One hour facing a wall of ancient ice'}</blockquote>
+    <blockquote data-reveal="up">{tx('Una hora frente a un muro de hielo milenario', 'One hour facing a wall of ancient ice', 'Une heure face à un mur de glace millénaire', 'Uma hora diante de um muro de gelo milenar')}</blockquote>
   </div>
 )}
 
@@ -120,12 +120,12 @@ const mapQ = encodeURIComponent(`${business.address.street}, ${business.address.
     <div class="container">
       <div class="section-head">
         <h2 id="h-galeria">{t.gallery.h}</h2>
-        <p class="lead">{es ? 'Fotos reales de nuestras salidas. Toca una para verla en grande.' : 'Real photos from our trips. Tap one to see it full size.'}</p>
+        <p class="lead">{tx('Fotos reales de nuestras salidas. Toca una para verla en grande.', 'Real photos from our trips. Tap one to see it full size.', 'De vraies photos de nos sorties. Touchez-en une pour l’agrandir.', 'Fotos reais das nossas saídas. Toque em uma para ampliar.')}</p>
       </div>
       <div class="gallery" data-stagger>
         {images.gallery.map((g) => (
           <figure data-reveal="rise">
-            <button type="button" data-lightbox={g.src} data-alt={g[lang]} aria-label={(es ? 'Ampliar: ' : 'Enlarge: ') + g[lang]}>
+            <button type="button" data-lightbox={g.src} data-alt={g[lang]} aria-label={tx('Ampliar: ', 'Enlarge: ', 'Agrandir : ', 'Ampliar: ') + g[lang]}>
               <img src={g.src} alt={g[lang]} width={g.w} height={g.h} loading="lazy" decoding="async" style={g.pos ? `object-position:${g.pos}` : undefined} />
             </button>
             <figcaption>{g[lang]}</figcaption>
@@ -167,8 +167,8 @@ const mapQ = encodeURIComponent(`${business.address.street}, ${business.address.
           ))}
         </div>
         <div class="carousel-nav">
-          <button type="button" data-prev aria-label={es ? 'Reseña anterior' : 'Previous review'}>‹</button>
-          <button type="button" data-next aria-label={es ? 'Reseña siguiente' : 'Next review'}>›</button>
+          <button type="button" data-prev aria-label={tx('Reseña anterior', 'Previous review', 'Avis précédent', 'Avaliação anterior')}>‹</button>
+          <button type="button" data-next aria-label={tx('Reseña siguiente', 'Next review', 'Avis suivant', 'Próxima avaliação')}>›</button>
         </div>
       </div>
     </div>
@@ -180,7 +180,7 @@ const mapQ = encodeURIComponent(`${business.address.street}, ${business.address.
     <div class="container faq-split">
       <div>
         <h2 id="h-faq">{t.faqH}</h2>
-        <p class="lead" style="font-size:1.05rem">{es ? '¿No encuentras tu respuesta?' : 'Can’t find your answer?'} <a href={routes.contact[lang]}>{es ? 'Escríbenos' : 'Contact us'}</a>.</p>
+        <p class="lead" style="font-size:1.05rem">{tx('¿No encuentras tu respuesta?', 'Can’t find your answer?', 'Vous ne trouvez pas votre réponse ?', 'Não encontrou sua resposta?')} <a href={routes.contact[lang]}>{tx('Escríbenos', 'Contact us', 'Écrivez-nous', 'Fale conosco')}</a>.</p>
         <figure class="faq-photo" data-reveal="rise"><img src={images.faq.src} alt={images.faq[lang]} width={images.faq.w} height={images.faq.h} loading="lazy" decoding="async" /></figure>
       </div>
       <div class="faq">
@@ -198,7 +198,7 @@ const mapQ = encodeURIComponent(`${business.address.street}, ${business.address.
       <div>
         <h2 id="h-mapa" data-reveal="up">{t.map.h}</h2>
         <p data-reveal="up">{t.map.p}</p>
-        <p data-reveal="up"><a href={routes.howTo[lang]}>{es ? 'Cómo llegar a Puerto Río Tranquilo' : 'How to get to Puerto Río Tranquilo'}</a></p>
+        <p data-reveal="up"><a href={routes.howTo[lang]}>{tx('Cómo llegar a Puerto Río Tranquilo', 'How to get to Puerto Río Tranquilo', 'Comment venir à Puerto Río Tranquilo', 'Como chegar a Puerto Río Tranquilo')}</a></p>
         <figure class="map-photo" data-reveal="rise"><img src={images.map.src} alt={images.map[lang]} width={images.map.w} height={images.map.h} loading="lazy" decoding="async" /></figure>
       </div>
       <iframe class="map-embed" title={t.map.h} src={`https://www.google.com/maps?q=${mapQ}&output=embed`} loading="lazy" referrerpolicy="no-referrer-when-downgrade" data-reveal="up"></iframe>

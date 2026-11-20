@@ -1,0 +1,41 @@
+---
+import ProsePage from '../../views/ProsePage.astro';
+import { business } from '../../data/tour';
+---
+<ProsePage lang="pt" routeKey="terms" cta={false}
+  title="Termos, condições e política de cancelamento"
+  description="Condições de reserva, pagamento, cancelamento e remarcação por clima do passeio da Costa Carrera Travel à Laguna San Rafael."
+  h1="Termos e condições">
+  <p><em>Tradução para fins informativos. Em caso de divergência, prevalece a versão em espanhol.</em></p>
+
+  <h2>1. Reservas e pagamento</h2>
+  <p>Você envia sua solicitação de reserva pelo WhatsApp a partir do calendário deste site. A reserva fica confirmada quando confirmamos as vagas pelo WhatsApp e recebemos o pagamento combinado. Os preços estão em pesos chilenos (CLP) e incluem impostos (IVA).</p>
+
+  <h2>2. Política de cancelamento</h2>
+  <table>
+    <thead><tr><th>Antecedência do cancelamento</th><th>Reembolso</th></tr></thead>
+    <tbody>
+      <tr><td>Mais de 7 dias antes do passeio</td><td>100%</td></tr>
+      <tr><td>Entre 7 e 3 dias antes</td><td>50%</td></tr>
+      <tr><td>Menos de 72 horas ou não comparecimento</td><td>Sem reembolso</td></tr>
+    </tbody>
+  </table>
+  <p>Para cancelar, escreva para <a href={`mailto:${business.email}`}>{business.email}</a> informando o código da reserva.</p>
+
+  <h2>3. Clima e condições de navegação</h2>
+  <p>Se a Autoridade Marítima fechar o porto ou se a operadora considerar as condições inseguras, o passeio é remarcado para outra data disponível ou 100% do valor pago é devolvido, à escolha do passageiro. O roteiro pode mudar durante o dia por motivos de segurança.</p>
+
+  <h2>4. Responsabilidades do passageiro</h2>
+  <ul>
+    <li>Chegar no horário ao ponto de encontro.</li>
+    <li>Informar na reserva qualquer condição médica, alergia ou mobilidade reduzida.</li>
+    <li>Seguir as instruções do piloto e do guia e usar o colete salva-vidas durante a navegação.</li>
+    <li>Menores de idade devem viajar com um adulto responsável.</li>
+  </ul>
+
+  <h2>5. Dados pessoais</h2>
+  <p>Usamos seus dados apenas para gerenciar sua reserva e entrar em contato, de acordo com a Lei chilena 19.628 sobre proteção da vida privada. Não compartilhamos seus dados com terceiros.</p>
+
+  <h2>6. Contato</h2>
+  <p>{business.legalName} · {business.address.street}, {business.address.locality} · {business.phoneDisplay[0]} · {business.email}</p>
+</ProsePage>

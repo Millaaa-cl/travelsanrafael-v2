@@ -46,10 +46,13 @@ export function GET() {
 - Horario: lunes a domingo ${business.hours}
 
 ## Páginas principales
+El sitio está en español (/), inglés (/en/), francés (/fr/) y portugués de Brasil (/pt/).
 - [Tour Laguna San Rafael (ES)](${u(routes.tour.es)}): itinerario, precio y reserva
 - [San Rafael Lagoon Tour (EN)](${u(routes.tour.en)}): itinerary, price and booking
 - [Tour Kayak Capillas de Mármol (ES)](${u(routes.kayak.es)}): recorrido, precio y reserva
 - [Marble Caves Kayak Tour (EN)](${u(routes.kayak.en)}): route, price and booking
+- [Excursion lagune San Rafael (FR)](${u(routes.tour.fr)}) · [Kayak aux Chapelles de Marbre (FR)](${u(routes.kayak.fr)})
+- [Passeio à Laguna San Rafael (PT)](${u(routes.tour.pt)}) · [Caiaque nas Capelas de Mármore (PT)](${u(routes.kayak.pt)})
 - [Preguntas frecuentes](${u(routes.faq.es)})
 - [FAQ (EN)](${u(routes.faq.en)})
 - [Cómo llegar](${u(routes.howTo.es)})

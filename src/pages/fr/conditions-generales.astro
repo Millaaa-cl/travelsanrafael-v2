@@ -1,0 +1,41 @@
+---
+import ProsePage from '../../views/ProsePage.astro';
+import { business } from '../../data/tour';
+---
+<ProsePage lang="fr" routeKey="terms" cta={false}
+  title="Conditions générales et politique d’annulation"
+  description="Conditions de réservation, de paiement, d’annulation et de report pour cause de météo de l’excursion Costa Carrera Travel à la lagune San Rafael."
+  h1="Conditions générales">
+  <p><em>Traduction à titre informatif. En cas de divergence, la version espagnole fait foi.</em></p>
+
+  <h2>1. Réservations et paiement</h2>
+  <p>Vous envoyez votre demande de réservation sur WhatsApp depuis le calendrier de ce site. Votre réservation est confirmée lorsque nous confirmons les places sur WhatsApp et recevons le paiement convenu. Les prix sont en pesos chiliens (CLP) et TVA comprise.</p>
+
+  <h2>2. Politique d’annulation</h2>
+  <table>
+    <thead><tr><th>Délai d’annulation</th><th>Remboursement</th></tr></thead>
+    <tbody>
+      <tr><td>Plus de 7 jours avant l’excursion</td><td>100 %</td></tr>
+      <tr><td>Entre 7 et 3 jours avant</td><td>50 %</td></tr>
+      <tr><td>Moins de 72 heures ou absence</td><td>Aucun remboursement</td></tr>
+    </tbody>
+  </table>
+  <p>Pour annuler, écrivez à <a href={`mailto:${business.email}`}>{business.email}</a> en indiquant votre code de réservation.</p>
+
+  <h2>3. Météo et conditions de navigation</h2>
+  <p>Si l’Autorité maritime ferme le port ou si l’opérateur juge les conditions dangereuses, l’excursion est reportée à une autre date disponible ou 100 % du montant payé est remboursé, au choix du passager. L’itinéraire peut être modifié au cours de la journée pour des raisons de sécurité.</p>
+
+  <h2>4. Responsabilités du passager</h2>
+  <ul>
+    <li>Arriver à l’heure au point de rendez-vous.</li>
+    <li>Signaler lors de la réservation tout problème de santé, allergie ou mobilité réduite.</li>
+    <li>Suivre les instructions du pilote et du guide et porter le gilet de sauvetage pendant la navigation.</li>
+    <li>Les mineurs doivent voyager avec un adulte responsable.</li>
+  </ul>
+
+  <h2>5. Données personnelles</h2>
+  <p>Nous utilisons vos données uniquement pour gérer votre réservation et vous contacter, conformément à la loi chilienne 19.628 sur la protection de la vie privée. Nous ne partageons pas vos données avec des tiers.</p>
+
+  <h2>6. Contact</h2>
+  <p>{business.legalName} · {business.address.street}, {business.address.locality} · {business.phoneDisplay[0]} · {business.email}</p>
+</ProsePage>

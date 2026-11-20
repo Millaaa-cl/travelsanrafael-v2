@@ -1,0 +1,36 @@
+---
+import ProsePage from '../../../views/ProsePage.astro';
+import { tour } from '../../../data/tour';
+import { routes } from '../../../i18n/routes';
+---
+<ProsePage lang="pt" routeKey="postSeason" parent={{ name: 'Blog', path: routes.blog.pt }} article={{ date: '2026-11-17' }}
+  title="Melhor época para visitar a Laguna San Rafael (clima por mês)"
+  description="Quando visitar a Laguna San Rafael: temporada do passeio, clima mês a mês, horas de luz e dicas para escolher a melhor data para ver o Glaciar San Rafael."
+  h1="Qual é a melhor época para visitar a Laguna San Rafael?" kicker="Planeje sua viagem">
+  <p><strong>Resposta rápida:</strong> a melhor época para visitar a Laguna San Rafael é de <strong>dezembro a fevereiro</strong>, quando os dias são mais longos (até 16 horas de luz) e as temperaturas mais agradáveis. Os passeios acontecem de {tour.season.pt.toLowerCase()}. Novembro e março são mais tranquilos, com preços parecidos e clima um pouco mais frio.</p>
+
+  <h2>Temporada do passeio</h2>
+  <p>O passeio de dia inteiro sai de Puerto Río Tranquilo de {tour.season.pt.toLowerCase()}. Fora desse período há menos saídas por causa do clima e dos dias mais curtos.</p>
+
+  <h2>Clima mês a mês</h2>
+  <table>
+    <thead><tr><th>Período</th><th>Clima</th><th>Vantagens</th><th>Atenção</th></tr></thead>
+    <tbody>
+      <tr><td>Set – nov (primavera)</td><td>Fresco, dias ficando mais longos</td><td>Menos visitantes, paisagens verdes</td><td>Mais vento e chuva</td></tr>
+      <tr><td>Dez – fev (verão)</td><td>Ameno, dias longos</td><td>Melhor clima e luz para fotos</td><td>Alta procura: reserve cedo</td></tr>
+      <tr><td>Mar – abr (outono)</td><td>Fresco, cores de outono</td><td>Tranquilidade, luz quente</td><td>Dias mais curtos, clima instável</td></tr>
+    </tbody>
+  </table>
+  <p>O clima em Aysén muda rápido: pode fazer sol, chover e ventar no mesmo dia. Cada saída é confirmada de acordo com as condições de navegação e a autorização da Autoridade Marítima.</p>
+
+  <h2>E se estiver nublado?</h2>
+  <p>O glaciar é igualmente impressionante com céu nublado. Muitos fotógrafos preferem a luz suave porque realça os tons azuis do gelo. Só condições de navegação inseguras cancelam uma saída e, nesse caso, remarcamos ou devolvemos 100%.</p>
+
+  <h2>Dicas para escolher a data</h2>
+  <ul>
+    <li>Reserve um ou dois dias de folga em Puerto Río Tranquilo caso seja preciso remarcar por causa do clima.</li>
+    <li>Reserve com pelo menos duas semanas de antecedência para janeiro ou fevereiro.</li>
+    <li>Confira a disponibilidade em tempo real no calendário de reservas.</li>
+  </ul>
+  <p><a class="btn btn--primary" href={routes.tour.pt + '#reservar'}>Ver datas disponíveis</a></p>
+</ProsePage>

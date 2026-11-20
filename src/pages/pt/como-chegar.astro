@@ -1,0 +1,36 @@
+---
+import ProsePage from '../../views/ProsePage.astro';
+import { tour } from '../../data/tour';
+import { routes } from '../../i18n/routes';
+---
+<ProsePage lang="pt" routeKey="howTo"
+  title="Como chegar a Puerto Río Tranquilo e à Laguna San Rafael"
+  description="Como chegar a Puerto Río Tranquilo, ponto de partida do passeio à Laguna San Rafael: voos para Balmaceda, ônibus desde Coyhaique e rotas pela Carretera Austral."
+  h1="Como chegar à Laguna San Rafael" kicker="Guia prático"
+  lead="A Laguna San Rafael só pode ser acessada por água ou por ar. O jeito mais fácil é um passeio de dia inteiro saindo de Puerto Río Tranquilo, na Carretera Austral.">
+  <p><strong>Resposta rápida:</strong> pegue um voo de Santiago até o aeroporto de Balmaceda (BBA), perto de Coyhaique, e siga para o sul pela Carretera Austral (Rota 7) até Puerto Río Tranquilo, a cerca de 4 a 5 horas de estrada. O passeio sai de lá às {tour.departureTime}, atravessa o Vale Exploradores e navega até o glaciar.</p>
+
+  <h2>1. Como chegar à Região de Aysén</h2>
+  <ul>
+    <li><strong>De avião:</strong> há voos diários de Santiago e Puerto Montt para o aeroporto de Balmaceda (BBA). O voo desde Santiago leva cerca de 2h30.</li>
+    <li><strong>De carro:</strong> percorra a Carretera Austral desde Puerto Montt, com algumas travessias de balsa. Reserve vários dias: é uma viagem de estrada clássica.</li>
+  </ul>
+
+  <h2>2. De Balmaceda ou Coyhaique a Puerto Río Tranquilo</h2>
+  <table>
+    <thead><tr><th>Opção</th><th>Tempo aprox.</th><th>Observações</th></tr></thead>
+    <tbody>
+      <tr><td>Carro alugado</td><td>4–5 h</td><td>A Rota 7 é quase toda asfaltada, com alguns trechos de rípio. Vistas do Lago General Carrera.</td></tr>
+      <tr><td>Ônibus desde Coyhaique</td><td>5–6 h</td><td>Várias saídas por semana. Reserve com antecedência no verão.</td></tr>
+      <tr><td>Traslado privado</td><td>4–5 h</td><td>Fale conosco e ajudamos a organizar.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>3. De Puerto Río Tranquilo à Laguna San Rafael</h2>
+  <p>Essa parte é com a gente. O passeio segue pela estrada do Vale Exploradores até a Baía Exploradores e depois navega de lancha rápida por rios e canais até a laguna e o Glaciar San Rafael. Veja o <a href={routes.tour.pt + '#itinerario'}>roteiro do passeio</a>.</p>
+
+  <div class="callout"><p><strong>Dica:</strong> chegue a Puerto Río Tranquilo pelo menos um dia antes do passeio. Você estará descansado, terá uma margem para atrasos na estrada e ainda poderá visitar as Capelas de Mármore.</p></div>
+
+  <h2>Onde se hospedar</h2>
+  <p>Puerto Río Tranquilo tem hostels, cabanas, campings e pousadas. O passeio sai às {tour.departureTime} da {tour.meetingPoint.pt.charAt(0).toLowerCase() + tour.meetingPoint.pt.slice(1)}, então ficar perto do centro é prático.</p>
+</ProsePage>

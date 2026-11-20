@@ -6,7 +6,7 @@
  */
 import Waves from './Waves.astro';
 import { content } from '../i18n/content';
-import { routes, type Lang } from '../i18n/routes';
+import { routes, pick, type Lang } from '../i18n/routes';
 import { images, tour, formatCLP } from '../data/tour';
 
 interface Props {
@@ -20,6 +20,7 @@ interface Props {
 }
 const { lang, over, title, lead, crumbs = [], secondary, bookHref } = Astro.props;
 const t = content[lang];
+const tx = pick(lang);
 ---
 <section class="hero">
   <div class="hero__media">
@@ -51,10 +52,10 @@ const t = content[lang];
 <div class="keyfacts">
   <div class="container">
     <dl>
-      <div><dt>{lang === 'es' ? 'Duración aproximada' : 'Approximate duration'}</dt><dd><span data-count={tour.durationHours}>{tour.durationHours}</span><small>{lang === 'es' ? ' horas' : ' hours'}</small></dd></div>
-      <div><dt>{lang === 'es' ? 'Salida desde Puerto Río Tranquilo' : 'Departure from Puerto Río Tranquilo'}</dt><dd>{tour.departureTime}<small>{lang === 'es' ? ' hrs' : ' am'}</small></dd></div>
-      <div><dt>{lang === 'es' ? 'Pasajeros por salida' : 'Passengers per departure'}</dt><dd><span data-count={tour.capacity}>{tour.capacity}</span><small>{lang === 'es' ? ' máx.' : ' max'}</small></dd></div>
-      <div><dt>{lang === 'es' ? 'Precio adulto, con transporte' : 'Adult price, with transport'}</dt><dd><span data-count={tour.priceFromCLP} data-format="clp">{formatCLP(tour.priceFromCLP)}</span></dd></div>
+      <div><dt>{tx('Duración aproximada', 'Approximate duration', 'Durée approximative', 'Duração aproximada')}</dt><dd><span data-count={tour.durationHours}>{tour.durationHours}</span><small>{tx(' horas', ' hours', ' heures', ' horas')}</small></dd></div>
+      <div><dt>{tx('Salida desde Puerto Río Tranquilo', 'Departure from Puerto Río Tranquilo', 'Départ de Puerto Río Tranquilo', 'Saída de Puerto Río Tranquilo')}</dt><dd>{tour.departureTime}<small>{tx(' hrs', ' am', ' h', ' h')}</small></dd></div>
+      <div><dt>{tx('Pasajeros por salida', 'Passengers per departure', 'Passagers par sortie', 'Passageiros por saída')}</dt><dd><span data-count={tour.capacity}>{tour.capacity}</span><small>{tx(' máx.', ' max', ' max.', ' máx.')}</small></dd></div>
+      <div><dt>{tx('Precio adulto, con transporte', 'Adult price, with transport', 'Tarif adulte, transport inclus', 'Preço adulto, com transporte')}</dt><dd><span data-count={tour.priceFromCLP} data-format="clp">{formatCLP(tour.priceFromCLP)}</span></dd></div>
     </dl>
   </div>
 </div>

@@ -3,7 +3,7 @@ import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import WhatsAppFab from '../components/WhatsAppFab.astro';
-import { routes, type Lang, type RouteKey } from '../i18n/routes';
+import { routes, langs, locales, pick, type Lang, type RouteKey } from '../i18n/routes';
 import { organizationSchema, websiteSchema } from '../lib/schema';
 import { business } from '../data/tour';
 
@@ -12,7 +12,7 @@ interface Props {
   title: string;          // 50–60 caracteres, con la palabra clave al inicio
   description: string;    // 140–160 caracteres
   routeKey?: RouteKey;    // para hreflang y el selector de idioma
-  alternates?: { es: string; en: string };
+  alternates?: Record<Lang, string>;
   image?: string;
   schema?: object[];
   noindex?: boolean;
@@ -28,12 +28,13 @@ const ogImage = new URL(image, site).href;
 // La marca se agrega solo si cabe: Google corta los títulos de más de unos 60 caracteres.
 const fullTitle = title.includes(business.name) || title.length > 42 ? title : `${title} | ${business.name}`;
 const jsonLd = [organizationSchema(), websiteSchema(lang), ...schema];
+const tx = pick(lang);
 // Google Tag Manager: snippet oficial (empuja el evento gtm.js que usan los activadores "Todas las páginas")
 const gtm = business.gtmId;
 const gtmHead = gtm && `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${gtm}');`;
 ---
 <!doctype html>
-<html lang={lang === 'es' ? 'es-CL' : 'en'}>
+<html lang={locales[lang].html}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -44,8 +45,7 @@ const gtmHead = gtm && `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start
     {noindex && <meta name="robots" content="noindex, follow" />}
     {alternates && !noindex && (
       <>
-        <link rel="alternate" hreflang="es-CL" href={new URL(alternates.es, site).href} />
-        <link rel="alternate" hreflang="en" href={new URL(alternates.en, site).href} />
+        {langs.map((l) => <link rel="alternate" hreflang={locales[l].html} href={new URL(alternates[l], site).href} />)}
         <link rel="alternate" hreflang="x-default" href={new URL(alternates.es, site).href} />
       </>
     )}
@@ -62,7 +62,8 @@ const gtmHead = gtm && `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:locale" content={lang === 'es' ? 'es_CL' : 'en_US'} />
+    <meta property="og:locale" content={locales[lang].og} />
+    {alternates && langs.filter((l) => l !== lang).map((l) => <meta property="og:locale:alternate" content={locales[l].og} />)}
     <meta name="twitter:card" content="summary_large_image" />
 
     <!-- Geo meta (SEO local) -->
@@ -88,11 +89,11 @@ const gtmHead = gtm && `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start
     </main>
     <Footer lang={lang} />
     <WhatsAppFab lang={lang} mobileCta={mobileCta} service={routeKey === 'kayak' ? 'kayak' : 'tour'} />
-    <dialog class="lightbox" aria-label={lang === 'es' ? 'Galería ampliada' : 'Enlarged gallery'}>
+    <dialog class="lightbox" aria-label={tx('Galería ampliada', 'Enlarged gallery', 'Galerie agrandie', 'Galeria ampliada')}>
       <figure><img src="data:," alt="" /><figcaption></figcaption></figure>
-      <button type="button" class="lightbox__btn lightbox__prev" aria-label={lang === 'es' ? 'Foto anterior' : 'Previous photo'}>‹</button>
-      <button type="button" class="lightbox__btn lightbox__next" aria-label={lang === 'es' ? 'Foto siguiente' : 'Next photo'}>›</button>
-      <button type="button" class="lightbox__btn lightbox__close" aria-label={lang === 'es' ? 'Cerrar' : 'Close'}>×</button>
+      <button type="button" class="lightbox__btn lightbox__prev" aria-label={tx('Foto anterior', 'Previous photo', 'Photo précédente', 'Foto anterior')}>‹</button>
+      <button type="button" class="lightbox__btn lightbox__next" aria-label={tx('Foto siguiente', 'Next photo', 'Photo suivante', 'Próxima foto')}>›</button>
+      <button type="button" class="lightbox__btn lightbox__close" aria-label={tx('Cerrar', 'Close', 'Fermer', 'Fechar')}>×</button>
     </dialog>
     <script>import '../scripts/motion.ts';</script>
   </body>

@@ -1,0 +1,35 @@
+---
+import ProsePage from '../../views/ProsePage.astro';
+import { business, tour } from '../../data/tour';
+---
+<ProsePage lang="pt" routeKey="about"
+  title="Sobre nós: operadora local de passeios à Laguna San Rafael"
+  description="Somos uma operadora local de Aysén especializada em passeios de lancha à Laguna San Rafael. Conheça nossa equipe, nossa embarcação e nossos padrões de segurança."
+  h1="Sobre nós" kicker={business.name}
+  lead="Somos uma equipe local da Região de Aysén, dedicada a mostrar um dos glaciares mais impressionantes da Patagônia com segurança e responsabilidade.">
+  <h2>Uma operadora local de Aysén</h2>
+  <p>A {business.name} faz parte da {business.legalName} e opera a partir de {business.address.locality}. Conhecemos os canais, o clima e a história da região porque vivemos aqui. Essa experiência aparece em cada saída: escolhemos a rota de acordo com as condições do dia e a segurança sempre vem em primeiro lugar.</p>
+
+  <h2>Nossa equipe</h2>
+  <ul>
+    <li><strong>Pilotos de lancha</strong> habilitados pela Autoridade Marítima do Chile (DIRECTEMAR).</li>
+    <li><strong>Guias certificados</strong> com treinamento em primeiros socorros e interpretação do patrimônio natural.</li>
+    <li><strong>Equipe de escritório</strong> disponível todos os dias, {business.hours}.</li>
+  </ul>
+
+  <h2>Segurança</h2>
+  <p>Nossa lancha leva até {tour.capacity} passageiros e tem casco de polietileno de alta densidade (PEAD). Está equipada com coletes salva-vidas para todos, rádio VHF, kit de primeiros socorros e todo o equipamento de segurança obrigatório. Não navegamos se a Autoridade Marítima fechar o porto ou se as condições não forem seguras.</p>
+
+  <h2>Turismo responsável</h2>
+  <p>O Parque Nacional Laguna San Rafael é uma Reserva da Biosfera da UNESCO. Mantemos grupos pequenos, não deixamos lixo e guardamos uma distância respeitosa da fauna e da frente do glaciar.</p>
+
+  <h2>Dados da empresa</h2>
+  <table>
+    <tbody>
+      <tr><th>Empresa</th><td>{business.legalName}</td></tr>
+      <tr><th>Endereço</th><td>{business.address.street}, {business.address.locality}, {business.address.region}, Chile</td></tr>
+      <tr><th>Telefone</th><td>{business.phoneDisplay.join(' · ')}</td></tr>
+      <tr><th>E-mail</th><td><a href={`mailto:${business.email}`}>{business.email}</a></td></tr>
+    </tbody>
+  </table>
+</ProsePage>

@@ -1,5 +1,5 @@
 ---
-import { routes, type Lang } from '../i18n/routes';
+import { routes, pick, type Lang } from '../i18n/routes';
 import { content } from '../i18n/content';
 import { business, waLink } from '../data/tour';
 
@@ -7,12 +7,12 @@ interface Props { lang: Lang }
 const { lang } = Astro.props;
 const t = content[lang];
 const year = new Date().getFullYear();
-const es = lang === 'es';
+const tx = pick(lang);
 // Sellos oficiales del cliente (PNG 150×150 con fondo transparente)
 const badges = [
-  { src: '/images/certificaciones/sello-confianza-turistica-sernatur.png', alt: es ? 'Sello Confianza Turística: compromiso con los protocolos COVID-19' : 'Confianza Turística seal: commitment to COVID-19 protocols' },
-  { src: '/images/certificaciones/sello-turismo-sustentable-sernatur.png', alt: es ? 'Sello Turismo Sustentable: compromiso con las buenas prácticas' : 'Sustainable Tourism seal: commitment to good practices' },
-  { src: '/images/certificaciones/servicio-turistico-registrado-sernatur.png', alt: es ? 'Servicio Turístico Registrado en SERNATUR' : 'Tourism service registered with SERNATUR' },
+  { src: '/images/certificaciones/sello-confianza-turistica-sernatur.png', alt: tx('Sello Confianza Turística: compromiso con los protocolos COVID-19', 'Confianza Turística seal: commitment to COVID-19 protocols', 'Label Confianza Turística : engagement envers les protocoles COVID-19', 'Selo Confianza Turística: compromisso com os protocolos de COVID-19') },
+  { src: '/images/certificaciones/sello-turismo-sustentable-sernatur.png', alt: tx('Sello Turismo Sustentable: compromiso con las buenas prácticas', 'Sustainable Tourism seal: commitment to good practices', 'Label Tourisme durable : engagement envers les bonnes pratiques', 'Selo Turismo Sustentável: compromisso com as boas práticas') },
+  { src: '/images/certificaciones/servicio-turistico-registrado-sernatur.png', alt: tx('Servicio Turístico Registrado en SERNATUR', 'Tourism service registered with SERNATUR', 'Service touristique enregistré auprès du SERNATUR', 'Serviço turístico registrado no SERNATUR') },
 ];
 ---
 <footer class="site-footer">
@@ -21,7 +21,7 @@ const badges = [
       <div>
         <p class="footer-brand">Costa Carrera <span>Travel</span></p>
         <p style="max-width:40ch">{t.footer.tagline}</p>
-        <h2 class="footer-badges-title">{es ? 'Certificaciones' : 'Certifications'}</h2>
+        <h2 class="footer-badges-title">{tx('Certificaciones', 'Certifications', 'Certifications', 'Certificações')}</h2>
         <ul class="footer-badges">
           {badges.map((b) => <li><img src={b.src} alt={b.alt} title={b.alt} width="150" height="150" loading="lazy" decoding="async" /></li>)}
         </ul>
@@ -30,12 +30,12 @@ const badges = [
         <h2>{t.footer.explore}</h2>
         <ul>
           <li><a href={routes.tour[lang]}>{t.nav.tour}</a></li>
-          <li><a href={routes.kayak[lang]}>{lang === 'es' ? 'Kayak Capillas de Mármol' : 'Marble Caves kayak'}</a></li>
+          <li><a href={routes.kayak[lang]}>{tx('Kayak Capillas de Mármol', 'Marble Caves kayak', 'Kayak aux Chapelles de Marbre', 'Caiaque nas Capelas de Mármore')}</a></li>
           <li><a href={routes.howTo[lang]}>{t.nav.howTo}</a></li>
           <li><a href={routes.faq[lang]}>{t.nav.faq}</a></li>
           <li><a href={routes.blog[lang]}>{t.nav.blog}</a></li>
           <li><a href={routes.about[lang]}>{t.nav.about}</a></li>
-          <li><a href={routes.terms[lang]}>{lang === 'es' ? 'Términos y condiciones' : 'Terms and conditions'}</a></li>
+          <li><a href={routes.terms[lang]}>{tx('Términos y condiciones', 'Terms and conditions', 'Conditions générales', 'Termos e condições')}</a></li>
         </ul>
       </div>
       <div>
@@ -52,7 +52,7 @@ const badges = [
     </div>
     <div class="footer-bottom">
       <span>© {year} {business.name}. {t.footer.rights}</span>
-      <a href={waLink(content[lang].whatsappMsg)} target="_blank" rel="noopener">{lang === 'es' ? 'Reservas por WhatsApp' : 'Bookings on WhatsApp'}</a>
+      <a href={waLink(content[lang].whatsappMsg)} target="_blank" rel="noopener">{tx('Reservas por WhatsApp', 'Bookings on WhatsApp', 'Réservations sur WhatsApp', 'Reservas pelo WhatsApp')}</a>
     </div>
   </div>
 </footer>

@@ -1,21 +1,24 @@
 ---
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
-import { routes, type Lang } from '../i18n/routes';
+import { routes, pick, type Lang } from '../i18n/routes';
 import { posts } from '../data/posts';
 import { breadcrumbSchema } from '../lib/schema';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
-const es = lang === 'es';
-const h1 = es ? 'Guía de viaje: Laguna San Rafael' : 'Travel guide: San Rafael Lagoon';
-const crumbs = [{ name: es ? 'Inicio' : 'Home', path: routes.home[lang] }, { name: 'Blog', path: routes.blog[lang] }];
-const seo = es
-  ? { title: 'Blog y guía de viaje de la Laguna San Rafael y Aysén', description: 'Consejos para planificar tu visita a la Laguna San Rafael: mejor época, qué llevar, cómo llegar a Puerto Río Tranquilo y datos del Glaciar San Rafael.' }
-  : { title: 'San Rafael Lagoon & Aysén travel guide and blog', description: 'Tips to plan your visit to San Rafael Lagoon: best time to go, what to pack, getting to Puerto Río Tranquilo and San Rafael Glacier facts.' };
+const tx = pick(lang);
+const h1 = tx('Guía de viaje: Laguna San Rafael', 'Travel guide: San Rafael Lagoon', 'Guide de voyage : lagune San Rafael', 'Guia de viagem: Laguna San Rafael');
+const crumbs = [{ name: tx('Inicio', 'Home', 'Accueil', 'Início'), path: routes.home[lang] }, { name: 'Blog', path: routes.blog[lang] }];
+const seo = tx(
+  { title: 'Blog y guía de viaje de la Laguna San Rafael y Aysén', description: 'Consejos para planificar tu visita a la Laguna San Rafael: mejor época, qué llevar, cómo llegar a Puerto Río Tranquilo y datos del Glaciar San Rafael.' },
+  { title: 'San Rafael Lagoon & Aysén travel guide and blog', description: 'Tips to plan your visit to San Rafael Lagoon: best time to go, what to pack, getting to Puerto Río Tranquilo and San Rafael Glacier facts.' },
+  { title: 'Blog et guide de voyage : lagune San Rafael et Aysén', description: 'Conseils pour préparer votre visite de la lagune San Rafael : meilleure période, que emporter, venir à Puerto Río Tranquilo et faits sur le glacier.' },
+  { title: 'Blog e guia de viagem da Laguna San Rafael e Aysén', description: 'Dicas para planejar sua visita à Laguna San Rafael: melhor época, o que levar, como chegar a Puerto Río Tranquilo e dados do Glaciar San Rafael.' },
+);
 ---
 <Base lang={lang} title={seo.title} description={seo.description} routeKey="blog" schema={[breadcrumbSchema(crumbs)]}>
-  <PageHero title={h1} kicker="Blog" lead={es ? 'Todo lo que necesitas saber antes de navegar hasta el Glaciar San Rafael.' : 'Everything you need to know before sailing to the San Rafael Glacier.'} crumbs={crumbs} />
+  <PageHero title={h1} kicker="Blog" lead={tx('Todo lo que necesitas saber antes de navegar hasta el Glaciar San Rafael.', 'Everything you need to know before sailing to the San Rafael Glacier.', 'Tout ce qu’il faut savoir avant de naviguer jusqu’au glacier San Rafael.', 'Tudo o que você precisa saber antes de navegar até o Glaciar San Rafael.')} crumbs={crumbs} />
   <section class="section">
     <div class="container cards">
       {posts.map((p) => (
@@ -25,8 +28,8 @@ const seo = es
         </a>
       ))}
       <a class="card" href={routes.howTo[lang]}>
-        <h2 style="font-size:1.25rem">{es ? 'Cómo llegar a Puerto Río Tranquilo' : 'How to get to Puerto Río Tranquilo'}</h2>
-        <p>{es ? 'Vuelos, buses y rutas por la Carretera Austral.' : 'Flights, buses and Carretera Austral driving routes.'}</p>
+        <h2 style="font-size:1.25rem">{tx('Cómo llegar a Puerto Río Tranquilo', 'How to get to Puerto Río Tranquilo', 'Comment venir à Puerto Río Tranquilo', 'Como chegar a Puerto Río Tranquilo')}</h2>
+        <p>{tx('Vuelos, buses y rutas por la Carretera Austral.', 'Flights, buses and Carretera Austral driving routes.', 'Vols, bus et itinéraires par la Carretera Austral.', 'Voos, ônibus e rotas pela Carretera Austral.')}</p>
       </a>
     </div>
   </section>

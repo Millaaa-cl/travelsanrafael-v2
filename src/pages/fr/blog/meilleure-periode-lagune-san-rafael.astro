@@ -1,0 +1,36 @@
+---
+import ProsePage from '../../../views/ProsePage.astro';
+import { tour } from '../../../data/tour';
+import { routes } from '../../../i18n/routes';
+---
+<ProsePage lang="fr" routeKey="postSeason" parent={{ name: 'Blog', path: routes.blog.fr }} article={{ date: '2026-11-17' }}
+  title="Meilleure période pour visiter la lagune San Rafael (météo)"
+  description="Quand visiter la lagune San Rafael : saison de l’excursion, météo mois par mois, heures de jour et conseils pour choisir la meilleure date pour voir le glacier."
+  h1="Quelle est la meilleure période pour visiter la lagune San Rafael ?" kicker="Préparer votre voyage">
+  <p><strong>En bref :</strong> la meilleure période pour visiter la lagune San Rafael va de <strong>décembre à février</strong>, quand les journées sont les plus longues (jusqu’à 16 heures de jour) et les températures les plus douces. Les excursions ont lieu de {tour.season.fr.toLowerCase()}. Novembre et mars sont plus calmes, avec des prix similaires et un temps un peu plus frais.</p>
+
+  <h2>La saison de l’excursion</h2>
+  <p>L’excursion d’une journée part de Puerto Río Tranquilo de {tour.season.fr.toLowerCase()}. En dehors de cette période, les départs sont moins nombreux à cause de la météo et des journées plus courtes.</p>
+
+  <h2>La météo mois par mois</h2>
+  <table>
+    <thead><tr><th>Période</th><th>Météo</th><th>Atouts</th><th>À savoir</th></tr></thead>
+    <tbody>
+      <tr><td>Sept. – nov. (printemps)</td><td>Frais, journées qui rallongent</td><td>Moins de visiteurs, paysages verts</td><td>Plus de vent et de pluie</td></tr>
+      <tr><td>Déc. – févr. (été)</td><td>Doux, longues journées</td><td>Meilleure météo et belle lumière pour les photos</td><td>Forte demande : réservez tôt</td></tr>
+      <tr><td>Mars – avr. (automne)</td><td>Frais, couleurs d’automne</td><td>Calme, lumière chaude</td><td>Journées plus courtes, temps changeant</td></tr>
+    </tbody>
+  </table>
+  <p>En Aysén, le temps change vite : soleil, pluie et vent peuvent se succéder dans la même journée. Chaque sortie est confirmée selon les conditions de navigation et l’autorisation de l’Autorité maritime.</p>
+
+  <h2>Et s’il fait nuageux ?</h2>
+  <p>Le glacier est tout aussi impressionnant sous un ciel couvert. Beaucoup de photographes préfèrent la lumière douce, qui fait ressortir les tons bleus de la glace. Seules des conditions de navigation dangereuses annulent une sortie, et dans ce cas nous la reportons ou remboursons 100 %.</p>
+
+  <h2>Conseils pour choisir votre date</h2>
+  <ul>
+    <li>Prévoyez un ou deux jours de marge à Puerto Río Tranquilo en cas de report pour cause de météo.</li>
+    <li>Réservez au moins deux semaines à l’avance pour janvier ou février.</li>
+    <li>Consultez les disponibilités en temps réel dans le calendrier de réservation.</li>
+  </ul>
+  <p><a class="btn btn--primary" href={routes.tour.fr + '#reservar'}>Voir les dates disponibles</a></p>
+</ProsePage>

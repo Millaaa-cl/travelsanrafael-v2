@@ -3,22 +3,26 @@ import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import Icon from '../components/Icon.astro';
 import { content } from '../i18n/content';
-import { routes, type Lang } from '../i18n/routes';
+import { routes, pick, type Lang } from '../i18n/routes';
 import { business, waLink } from '../data/tour';
 import { breadcrumbSchema } from '../lib/schema';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const t = content[lang];
-const es = lang === 'es';
-const crumbs = [{ name: es ? 'Inicio' : 'Home', path: routes.home[lang] }, { name: t.nav.contact, path: routes.contact[lang] }];
+const tx = pick(lang);
+const crumbs = [{ name: tx('Inicio', 'Home', 'Accueil', 'Início'), path: routes.home[lang] }, { name: t.nav.contact, path: routes.contact[lang] }];
 const mapQ = encodeURIComponent(`${business.address.street}, ${business.address.locality}, Aysén, Chile`);
-const seo = es
-  ? { title: 'Contacto Costa Carrera Travel, Puerto Río Tranquilo', description: `Contáctanos por WhatsApp, teléfono o correo para el tour a la Laguna San Rafael. Oficina en ${business.address.street}, ${business.address.locality}. Atención de lunes a domingo.` }
-  : { title: 'Contact Costa Carrera Travel, Puerto Río Tranquilo', description: `Contact us by WhatsApp, phone or email about the San Rafael Lagoon tour. Office at ${business.address.street}, ${business.address.locality}. Open every day.` };
+const office = `${business.address.street}, ${business.address.locality}`;
+const seo = tx(
+  { title: 'Contacto Costa Carrera Travel, Puerto Río Tranquilo', description: `Contáctanos por WhatsApp, teléfono o correo para el tour a la Laguna San Rafael. Oficina en ${office}. Atención de lunes a domingo.` },
+  { title: 'Contact Costa Carrera Travel, Puerto Río Tranquilo', description: `Contact us by WhatsApp, phone or email about the San Rafael Lagoon tour. Office at ${office}. Open every day.` },
+  { title: 'Contact Costa Carrera Travel, Puerto Río Tranquilo', description: `Contactez-nous par WhatsApp, téléphone ou e-mail pour l’excursion à la lagune San Rafael. Bureau au ${office}. Ouvert tous les jours.` },
+  { title: 'Contato Costa Carrera Travel, Puerto Río Tranquilo', description: `Fale conosco pelo WhatsApp, telefone ou e-mail sobre o passeio à Laguna San Rafael. Escritório na ${office}. Atendimento todos os dias.` },
+);
 ---
 <Base lang={lang} title={seo.title} description={seo.description} routeKey="contact" schema={[breadcrumbSchema(crumbs)]}>
-  <PageHero title={t.nav.contact} kicker="Costa Carrera Travel" lead={es ? 'Respondemos rápido por WhatsApp. Si prefieres, llámanos o escríbenos un correo.' : 'We reply fast on WhatsApp. You can also call or email us.'} crumbs={crumbs} />
+  <PageHero title={t.nav.contact} kicker="Costa Carrera Travel" lead={tx('Respondemos rápido por WhatsApp. Si prefieres, llámanos o escríbenos un correo.', 'We reply fast on WhatsApp. You can also call or email us.', 'Nous répondons vite sur WhatsApp. Vous pouvez aussi nous appeler ou nous écrire un e-mail.', 'Respondemos rápido pelo WhatsApp. Se preferir, ligue ou envie um e-mail.')} crumbs={crumbs} />
   <section class="section">
     <div class="container split">
       <div>
@@ -33,7 +37,7 @@ const seo = es
           <a class="btn btn--ghost" style="color:var(--ink)" href={`${routes.tour[lang]}#reservar`}>{t.bookNow}</a>
         </div>
       </div>
-      <iframe class="map-embed" title={es ? 'Mapa de la oficina' : 'Office map'} src={`https://www.google.com/maps?q=${mapQ}&output=embed`} loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      <iframe class="map-embed" title={tx('Mapa de la oficina', 'Office map', 'Carte du bureau', 'Mapa do escritório')} src={`https://www.google.com/maps?q=${mapQ}&output=embed`} loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
     </div>
   </section>
 </Base>

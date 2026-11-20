@@ -98,6 +98,18 @@ p { margin: 0 0 1em; }
 .header-actions { display: flex; align-items: center; gap: 10px; }
 .lang-link { font-size: .85rem; font-weight: 700; text-decoration: none; color: var(--ink); padding: .45rem .7rem; border: 2px solid var(--line); border-radius: 999px; transition: border-color .2s; }
 .lang-link:hover { border-color: var(--teal); color: var(--ink); }
+/* Selector de idioma (ES / EN / FR / PT): <details> con la lista de los otros idiomas */
+.lang-menu { position: relative; }
+.lang-menu summary { list-style: none; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; }
+.lang-menu summary::-webkit-details-marker { display: none; }
+.lang-menu summary::after { content: ""; width: 6px; height: 6px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: translateY(-2px) rotate(45deg); transition: transform .25s; }
+.lang-menu[open] summary { border-color: var(--teal); }
+.lang-menu[open] summary::after { transform: translateY(1px) rotate(-135deg); }
+.lang-menu summary:focus-visible { outline: 3px solid var(--teal); outline-offset: 2px; }
+.lang-menu ul { position: absolute; right: 0; top: calc(100% + 8px); z-index: 60; list-style: none; margin: 0; padding: 6px; min-width: 170px; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); box-shadow: 0 14px 34px -16px rgba(29,29,27,.4); }
+.lang-menu a { display: flex; gap: 10px; align-items: baseline; padding: 10px 12px; border-radius: 10px; color: var(--ink); text-decoration: none; font-size: .95rem; }
+.lang-menu a b { font-size: .78rem; color: var(--teal-deep); min-width: 22px; }
+.lang-menu a:hover, .lang-menu a:focus-visible { background: var(--ice); color: var(--ink); }
 .header-actions .btn { min-height: 44px; padding: 0 1.2rem; font-size: .92rem; }
 .menu-toggle { background: none; border: 0; padding: 8px; cursor: pointer; color: var(--ink); }
 .menu-toggle svg { width: 28px; height: 28px; }

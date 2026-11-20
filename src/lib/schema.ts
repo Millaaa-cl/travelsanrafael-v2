@@ -1,7 +1,7 @@
 /** Generadores de datos estructurados JSON-LD (schema.org) para SEO, GEO y AEO. */
 import { business, tour, kayak, kayakImages, logo } from '../data/tour';
 import type { Lang } from '../i18n/routes';
-import { routes } from '../i18n/routes';
+import { routes, locales, pick } from '../i18n/routes';
 
 const site = business.url;
 const abs = (p: string) => new URL(p, site).href;
@@ -48,13 +48,14 @@ export function websiteSchema(lang: Lang) {
     '@id': `${site}/#website`,
     url: site,
     name: business.name,
-    inLanguage: lang === 'es' ? 'es-CL' : 'en',
+    inLanguage: locales[lang].html,
     publisher: { '@id': orgId },
   };
 }
 
 export function tourSchema(lang: Lang, description: string, itinerary: { t: string; d: string }[]) {
-  const name = lang === 'es' ? 'Tour Full Day Laguna San Rafael' : 'San Rafael Lagoon Full-Day Tour';
+  const tx = pick(lang);
+  const name = tx('Tour Full Day Laguna San Rafael', 'San Rafael Lagoon Full-Day Tour', 'Excursion d’une journée à la lagune San Rafael', 'Passeio de dia inteiro à Laguna San Rafael');
   const url = abs(routes.tour[lang]);
   const base = {
     '@type': 'Offer',
@@ -66,10 +67,10 @@ export function tourSchema(lang: Lang, description: string, itinerary: { t: stri
   };
   // Dos tarifas: adulto y niño (hasta childMaxAge años)
   const offer = [
-    { ...base, name: lang === 'es' ? 'Adulto' : 'Adult', price: tour.priceFromCLP },
+    { ...base, name: tx('Adulto', 'Adult', 'Adulte', 'Adulto'), price: tour.priceFromCLP },
     {
       ...base,
-      name: lang === 'es' ? `Niño (hasta ${tour.childMaxAge} años)` : `Child (up to ${tour.childMaxAge} years)`,
+      name: tx(`Niño (hasta ${tour.childMaxAge} años)`, `Child (up to ${tour.childMaxAge} years)`, `Enfant (jusqu’à ${tour.childMaxAge} ans)`, `Criança (até ${tour.childMaxAge} anos)`),
       price: tour.priceChildCLP,
     },
   ];
@@ -82,8 +83,8 @@ export function tourSchema(lang: Lang, description: string, itinerary: { t: stri
       description,
       url,
       image: abs('/images/og-laguna-san-rafael.jpg'),
-      inLanguage: lang === 'es' ? 'es-CL' : 'en',
-      touristType: lang === 'es' ? ['Naturaleza', 'Aventura', 'Glaciares'] : ['Nature', 'Adventure', 'Glaciers'],
+      inLanguage: locales[lang].html,
+      touristType: tx(['Naturaleza', 'Aventura', 'Glaciares'], ['Nature', 'Adventure', 'Glaciers'], ['Nature', 'Aventure', 'Glaciers'], ['Natureza', 'Aventura', 'Glaciares']),
       provider: { '@id': orgId },
       offers: offer,
       itinerary: {
@@ -96,7 +97,7 @@ export function tourSchema(lang: Lang, description: string, itinerary: { t: stri
       },
       subjectOf: {
         '@type': 'TouristAttraction',
-        name: lang === 'es' ? 'Glaciar San Rafael' : 'San Rafael Glacier',
+        name: tx('Glaciar San Rafael', 'San Rafael Glacier', 'Glacier San Rafael', 'Glaciar San Rafael'),
         containedInPlace: {
           '@type': 'Park',
           name: 'Parque Nacional Laguna San Rafael',
@@ -148,7 +149,7 @@ export function articleSchema(o: { title: string; description: string; path: str
     '@type': 'Article',
     headline: o.title,
     description: o.description,
-    inLanguage: o.lang === 'es' ? 'es-CL' : 'en',
+    inLanguage: locales[o.lang].html,
     mainEntityOfPage: abs(o.path),
     datePublished: o.date,
     dateModified: o.updated ?? o.date,
@@ -160,10 +161,11 @@ export function articleSchema(o: { title: string; description: string; path: str
 
 /** Tour Kayak Capillas de Mármol: TouristTrip + Product con una sola tarifa por persona. */
 export function kayakSchema(lang: Lang, name: string, description: string, itinerary: { t: string; d: string }[]) {
+  const tx = pick(lang);
   const url = abs(routes.kayak[lang]);
   const offer = {
     '@type': 'Offer',
-    name: lang === 'es' ? 'Por persona' : 'Per person',
+    name: tx('Por persona', 'Per person', 'Par personne', 'Por pessoa'),
     price: kayak.priceCLP,
     priceCurrency: kayak.currency,
     availability: 'https://schema.org/InStock',
@@ -181,8 +183,8 @@ export function kayakSchema(lang: Lang, name: string, description: string, itine
       description,
       image,
       url,
-      inLanguage: lang === 'es' ? 'es-CL' : 'en',
-      touristType: lang === 'es' ? ['Aventura', 'Naturaleza', 'Kayak'] : ['Adventure', 'Nature', 'Kayaking'],
+      inLanguage: locales[lang].html,
+      touristType: tx(['Aventura', 'Naturaleza', 'Kayak'], ['Adventure', 'Nature', 'Kayaking'], ['Aventure', 'Nature', 'Kayak'], ['Aventura', 'Natureza', 'Caiaque']),
       provider: { '@id': orgId },
       offers: offer,
       itinerary: {
@@ -195,7 +197,7 @@ export function kayakSchema(lang: Lang, name: string, description: string, itine
       },
       subjectOf: {
         '@type': 'TouristAttraction',
-        name: lang === 'es' ? 'Capillas de Mármol' : 'Marble Caves (Capillas de Mármol)',
+        name: tx('Capillas de Mármol', 'Marble Caves (Capillas de Mármol)', 'Chapelles de Marbre (Capillas de Mármol)', 'Capelas de Mármore (Capillas de Mármol)'),
         containedInPlace: {
           '@type': 'LakeBodyOfWater',
           name: 'Lago General Carrera',

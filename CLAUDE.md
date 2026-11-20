@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Proyecto
 
-**Versión 2** del sitio de reservas de **travelsanrafael.cl** (reservas por WhatsApp, sin pago en línea ni backend; la v1 con Flow + PHP vive en `C:\Users\holam\travelsanrafael`). Dos servicios: el Tour Full Day Laguna San Rafael (Aysén, Chile), que es el principal, y el Tour Kayak Capillas de Mármol (desde el 19-11-2026). Es bilingüe (ES por defecto en `/`, EN en `/en/`) y está optimizado para SEO, GEO y AEO.
+**Versión 2** del sitio de reservas de **travelsanrafael.cl** (reservas por WhatsApp, sin pago en línea ni backend; la v1 con Flow + PHP vive en `C:\Users\holam\travelsanrafael`). Dos servicios: el Tour Full Day Laguna San Rafael (Aysén, Chile), que es el principal, y el Tour Kayak Capillas de Mármol (desde el 19-11-2026). Está en cuatro idiomas (ES por defecto en `/`, EN en `/en/`, FR en `/fr/` y PT de Brasil en `/pt/`, desde el 20-11-2026) y está optimizado para SEO, GEO y AEO.
 
 Es 100 % estático: se publica en un hosting cPanel (Apache) subiendo el contenido de `dist/` a `public_html`. No hay Node, PHP ni base de datos en uso. Su repo es `https://github.com/Millaaa-cl/travelsanrafael-v2` (no hacer push al repo de la v1, `costacarreratravel`).
 
@@ -26,12 +26,12 @@ npm.cmd run package   # build + audit + costacarrera-v2-public_html.zip (usa `ta
 ## Arquitectura
 
 **Frontend estático (Astro 7, sin framework de UI, CSS propio en `src/styles/global.css`)**
-- `src/data/tour.ts` es la **fuente única** de los datos del negocio y del tour: precio mostrado, horarios, punto de encuentro, dirección e imágenes (con sus dimensiones y textos alt ES/EN). Los textos, el JSON-LD (`src/lib/schema.ts`) y `/llms.txt` (`src/pages/llms.txt.ts`) se calculan desde aquí. Cambiar un dato en este archivo lo actualiza en todo el sitio.
-- `src/i18n/content.ts` reúne todo el copy ES/EN de la home y del tour: itinerario, incluye, FAQ, reseñas, textos del widget y footer. Los párrafos `answer` y las FAQ son el contenido pensado para AEO.
-- `src/i18n/routes.ts` mapea cada página a sus slugs ES/EN (que son distintos entre idiomas). Lo usan el menú, el selector de idioma y el hreflang (`Base.astro`). **Al agregar una página, regístrala aquí.**
+- `src/data/tour.ts` es la **fuente única** de los datos del negocio y del tour: precio mostrado, horarios, punto de encuentro, dirección e imágenes (con sus dimensiones y textos alt en los 4 idiomas). Los textos, el JSON-LD (`src/lib/schema.ts`) y `/llms.txt` (`src/pages/llms.txt.ts`) se calculan desde aquí. Cambiar un dato en este archivo lo actualiza en todo el sitio.
+- `src/i18n/content.ts` reúne todo el copy ES/EN/FR/PT de la home y del tour: itinerario, incluye, FAQ, reseñas, textos del widget y footer. Los párrafos `answer` y las FAQ son el contenido pensado para AEO.
+- `src/i18n/routes.ts` mapea cada página a sus slugs en los 4 idiomas (son distintos entre idiomas). Lo usan el menú, el selector de idioma (`<details class="lang-menu">` en `Header.astro`) y el hreflang (`Base.astro`). También define `langs`, `locales` (lang/hreflang, og:locale y formato de fechas por idioma) y `pick(lang)`, que se usa así para los textos sueltos de los componentes: `const tx = pick(lang); tx('Inicio', 'Home', 'Accueil', 'Início')`. **Al agregar una página, regístrala aquí y crea su archivo en cada idioma** (`src/pages/`, `en/`, `fr/`, `pt/`).
 - Patrón de páginas:
   - las vistas en `src/views/*View.astro` reciben `lang`, y los archivos de `src/pages/` son envoltorios de una línea;
-  - las páginas de texto (cómo llegar, nosotros, términos, blog) usan `src/views/ProsePage.astro` y tienen el contenido escrito directamente en el archivo de la página, uno por idioma;
+  - las páginas de texto (cómo llegar, nosotros, términos, blog) usan `src/views/ProsePage.astro` y tienen el contenido escrito directamente en el archivo de la página, uno por idioma (4 archivos);
   - el blog no usa content collections: sus metadatos están en `src/data/posts.ts` y sus rutas en `routes.ts`.
 - `src/layouts/Base.astro` arma todo el `<head>` SEO: canonical, hreflang, OG, geo meta, y siempre el JSON-LD de Organization y WebSite más el `schema` que pase cada página. La marca se agrega al título solo si cabe (42 caracteres o menos).
 - `src/components/Sections.astro` contiene todas las secciones del tour en un solo componente, controladas por `show={[...]}`. Lo comparten la home y la ficha del tour. El fondo blanco o gris de cada sección se alterna solo según el orden de `show` (función `bg()`), así que no hay que poner `section--ice` a mano. Con `withBooking` (lo usa la home), el bloque `answer` incluye el `BookingWidget`: texto y collage a la izquierda, widget sticky a la derecha (`.overview--booking`). En una página con el widget, `motion.ts` cambia los enlaces a `…/tour-laguna-san-rafael/#reservar` por `#reservar`.
@@ -56,9 +56,11 @@ npm.cmd run package   # build + audit + costacarrera-v2-public_html.zip (usa `ta
   - el total usa `priceFromCLP` / `priceChildCLP`;
   - al enviar, arma el mensaje con `content.ts` → `booking.msg` y abre `https://wa.me/<business.whatsapp>?text=…` con `window.open`, sin `'noopener'` en las features (con él siempre devuelve `null`). Si la ventana se bloquea, navega en la misma pestaña.
   - No hay control de cupos: el operador confirma por chat, y las fechas llenas se agregan a `closed`.
-- **Kayak Capillas de Mármol** (segundo servicio): datos en `tour.ts` → `kayak` (precio por persona, igual para adultos y niños; salida a 5 km del pueblo), textos ES/EN en `src/i18n/kayak.ts`, vista `src/views/KayakView.astro` (ruta `kayak` en `routes.ts`) y JSON-LD con `kayakSchema()`. Se reserva solo por WhatsApp: la tarjeta lateral `.kayak-book` reusa el marco de `.booking`, sin calendario. Sus fotos están en `tour.ts` → `kayakImages` (hero de `PageHero`, galería de 3 con lightbox, imagen OG e `image` del JSON-LD); la primera de la galería se reusa en la promo de la home (`.kayak-promo`) y en la tarjeta "Otros tours" (`OtherTour.astro`). `WhatsAppFab` recibe `service` desde `Base` (según `routeKey`) para mostrar el precio del kayak en la barra móvil. Los datos sin confirmar están marcados con `TODO`.
+- **Kayak Capillas de Mármol** (segundo servicio): datos en `tour.ts` → `kayak` (precio por persona, igual para adultos y niños; salida a 5 km del pueblo), textos ES/EN/FR/PT en `src/i18n/kayak.ts`, vista `src/views/KayakView.astro` (ruta `kayak` en `routes.ts`) y JSON-LD con `kayakSchema()`. Se reserva solo por WhatsApp: la tarjeta lateral `.kayak-book` reusa el marco de `.booking`, sin calendario. Sus fotos están en `tour.ts` → `kayakImages` (hero de `PageHero`, galería de 3 con lightbox, imagen OG e `image` del JSON-LD); la primera de la galería se reusa en la promo de la home (`.kayak-promo`) y en la tarjeta "Otros tours" (`OtherTour.astro`). `WhatsAppFab` recibe `service` desde `Base` (según `routeKey`) para mostrar el precio del kayak en la barra móvil. Los datos sin confirmar están marcados con `TODO`.
 - **Google Tag Manager** (`GTM-5QG5Q92C`, en `business.gtmId` de `tour.ts`): `Base.astro` inserta el snippet oficial al inicio del `<head>` y el `<noscript>` al inicio del `<body>` en todas las páginas. Las etiquetas (GA4, etc.) se configuran en el panel de GTM, no en el código. Con `gtmId` vacío se desactiva.
 - `public/.htaccess` fuerza HTTPS y el dominio sin www, redirige con 301 las URLs del WordPress antiguo (`/itinerario`, `/cart`, …) y bloquea archivos ocultos.
+
+- **Traducciones FR y PT:** las hizo Claude (no un traductor nativo). Los mensajes de WhatsApp que arma el sitio salen en el idioma del visitante, igual que en inglés. Los términos en FR/PT aclaran que, ante diferencias, rige la versión en español.
 
 ## Datos del tour (confirmados por el cliente)
 
@@ -70,7 +72,7 @@ Los valores que quedan pendientes están marcados con `TODO` en el código: temp
 
 ## Imágenes
 
-Las fotos fuente del cliente están en `C:\Users\holam\Desktop\imagenes` y `C:\Users\holam\Desktop\nuevas imagenes` (esta última son fotos de WhatsApp de 1280 px, copiadas sin recomprimir). Las versiones optimizadas están en `public/images/`, en JPG con nombres descriptivos para SEO. El hero tiene una versión de escritorio de 1920×1080 y una para móvil de 900×1100, servidas con `<picture>`. Al reemplazar una imagen, actualiza también `w`/`h` y los textos alt en `tour.ts`.
+Las fotos fuente del cliente están en `C:\Users\holam\Desktop\imagenes` y `C:\Users\holam\Desktop\nuevas imagenes` (esta última son fotos de WhatsApp de 1280 px, copiadas sin recomprimir). Las versiones optimizadas están en `public/images/`, en JPG con nombres descriptivos para SEO. El hero tiene una versión de escritorio de 1920×1080 y una para móvil de 900×1100, servidas con `<picture>`. Al reemplazar una imagen, actualiza también `w`/`h` y los textos alt (es, en, fr, pt) en `tour.ts`.
 
 - Usa fotos verticales en los espacios verticales (collage, embarcación, FAQ, reseñas) y horizontales en los pasos del itinerario y en el mapa.
 - Si una foto vertical cae en un espacio horizontal (por ejemplo, en la galería), agrega `pos` (object-position, como `'50% 78%'`) para que el recorte muestre lo importante. Hoy solo la galería lee `pos`.

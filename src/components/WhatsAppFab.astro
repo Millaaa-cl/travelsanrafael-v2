@@ -1,6 +1,6 @@
 ---
 import Icon from './Icon.astro';
-import { routes, type Lang } from '../i18n/routes';
+import { routes, pick, type Lang } from '../i18n/routes';
 import { content } from '../i18n/content';
 import { tour, kayak, formatCLP, waLink } from '../data/tour';
 import { kayakContent } from '../i18n/kayak';
@@ -12,7 +12,7 @@ const t = content[lang];
 const isKayak = service === 'kayak';
 const bar = isKayak
   ? { label: kayakContent[lang].perPerson, price: kayak.priceCLP, href: '#reservar', msg: kayakContent[lang].card.msg }
-  : { label: lang === 'es' ? 'Adulto, con transporte' : 'Adult, with transport', price: tour.priceFromCLP, href: `${routes.tour[lang]}#reservar`, msg: t.whatsappMsg };
+  : { label: pick(lang)('Adulto, con transporte', 'Adult, with transport', 'Adulte, transport inclus', 'Adulto, com transporte'), price: tour.priceFromCLP, href: `${routes.tour[lang]}#reservar`, msg: t.whatsappMsg };
 ---
 <a class="wa-fab" href={waLink(bar.msg)} target="_blank" rel="noopener" aria-label={t.whatsappLabel}>
   <Icon name="whatsapp" />

@@ -1,0 +1,37 @@
+---
+import ProsePage from '../../../views/ProsePage.astro';
+import { routes } from '../../../i18n/routes';
+---
+<ProsePage lang="fr" routeKey="postPack" parent={{ name: 'Blog', path: routes.blog.fr }} article={{ date: '2026-11-17' }}
+  title="Que emporter pour l’excursion à la lagune San Rafael"
+  description="Liste de choses à emporter pour l’excursion à la lagune San Rafael : vêtements en couches, imperméables, accessoires et conseils contre le mal de mer en Patagonie."
+  h1="Que emporter pour l’excursion à la lagune San Rafael" kicker="Liste à emporter">
+  <p><strong>En bref :</strong> prévoyez des vêtements en couches (sous-couche thermique, polaire et veste imperméable), un bonnet, des gants, des lunettes de soleil, de la crème solaire, un petit sac à dos, un appareil photo avec une batterie de rechange et un médicament contre le mal de mer si besoin. Les gilets de sauvetage et le déjeuner sont inclus.</p>
+
+  <h2>Vêtements</h2>
+  <ul>
+    <li><strong>Sous-couche thermique</strong> (évitez le coton, qui garde l’humidité).</li>
+    <li><strong>Couche intermédiaire</strong> : polaire ou doudoune.</li>
+    <li><strong>Veste et pantalon imperméables</strong> : le vent est froid près du glacier.</li>
+    <li>Bonnet, tour de cou et gants, même en été.</li>
+    <li>Chaussures confortables et antidérapantes.</li>
+  </ul>
+
+  <h2>Accessoires</h2>
+  <ul>
+    <li>Lunettes de soleil et crème solaire : la réverbération sur la glace et l’eau est forte.</li>
+    <li>Appareil photo ou téléphone, batterie de rechange et sac étanche ou housse de pluie.</li>
+    <li>Jumelles pour observer les oiseaux et les otaries.</li>
+    <li>Gourde réutilisable.</li>
+    <li>Espèces pour les pourboires ou les achats.</li>
+  </ul>
+
+  <h2>Santé et confort</h2>
+  <ul>
+    <li>Médicament contre le mal de mer si vous y êtes sujet : prenez-le avant d’embarquer.</li>
+    <li>Vos médicaments personnels.</li>
+    <li>Signalez-nous vos allergies ou restrictions alimentaires à la réservation pour adapter le déjeuner.</li>
+  </ul>
+
+  <div class="callout"><p><strong>Inutile d’apporter :</strong> gilet de sauvetage, déjeuner ou transport. Tout est inclus dans l’<a href={routes.tour.fr}>excursion d’une journée</a>, y compris le bus aller-retour depuis Puerto Río Tranquilo.</p></div>
+</ProsePage>

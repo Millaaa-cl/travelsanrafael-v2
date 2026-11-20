@@ -6,10 +6,12 @@ import { routes } from '../i18n/routes';
   <section class="section">
     <div class="container" style="max-width:640px;text-align:center">
       <h1 style="font-size:2.6rem">Esta página se derritió</h1>
-      <p class="lead" style="margin-inline:auto">La página que buscas no existe o cambió de dirección. / This page does not exist.</p>
+      <p class="lead" style="margin-inline:auto">La página que buscas no existe o cambió de dirección. / This page does not exist. / Cette page n’existe pas. / Esta página não existe.</p>
       <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
         <a class="btn btn--primary" href={routes.tour.es}>Ver el tour</a>
-        <a class="btn btn--ghost" style="color:var(--deep)" href={routes.home.en}>English</a>
+        <a class="btn btn--ghost" style="color:var(--deep)" href={routes.home.en} hreflang="en">English</a>
+        <a class="btn btn--ghost" style="color:var(--deep)" href={routes.home.fr} hreflang="fr">Français</a>
+        <a class="btn btn--ghost" style="color:var(--deep)" href={routes.home.pt} hreflang="pt-BR">Português</a>
       </div>
     </div>
   </section>

@@ -1,14 +1,15 @@
 ---
 import Icon from './Icon.astro';
 import Logo from './Logo.astro';
-import { routes, type Lang } from '../i18n/routes';
+import { routes, langs, locales, pick, type Lang } from '../i18n/routes';
 import { content } from '../i18n/content';
 
-interface Props { lang: Lang; alternates?: { es: string; en: string } }
+interface Props { lang: Lang; alternates?: Record<Lang, string> }
 const { lang, alternates } = Astro.props;
 const t = content[lang];
-const other: Lang = lang === 'es' ? 'en' : 'es';
-const otherHref = alternates ? alternates[other] : routes.home[other];
+const tx = pick(lang);
+// Selector de idioma: enlaza a la misma página en cada idioma (o al inicio si la página no tiene equivalente)
+const others = langs.filter((l) => l !== lang).map((l) => ({ l, href: alternates ? alternates[l] : routes.home[l] }));
 const path = Astro.url.pathname;
 const items = [
   { href: routes.tour[lang], label: t.nav.tour },
@@ -23,18 +24,23 @@ const items = [
 <a class="skip-link" href="#contenido">{t.skip}</a>
 <header class="site-header">
   <div class="container">
-    <a class="brand" href={routes.home[lang]} aria-label={lang === 'es' ? 'Costa Carrera Travel, inicio' : 'Costa Carrera Travel, home'}>
+    <a class="brand" href={routes.home[lang]} aria-label={tx('Costa Carrera Travel, inicio', 'Costa Carrera Travel, home', 'Costa Carrera Travel, accueil', 'Costa Carrera Travel, início')}>
       <Logo />
     </a>
-    <nav class="nav" aria-label={lang === 'es' ? 'Principal' : 'Main'}>
+    <nav class="nav" aria-label={tx('Principal', 'Main', 'Principale', 'Principal')}>
       <ul>
         {items.map((i) => <li><a href={i.href} aria-current={path.startsWith(i.href) ? 'page' : undefined}>{i.label}</a></li>)}
       </ul>
     </nav>
     <div class="header-actions">
-      <a class="lang-link" href={otherHref} hreflang={other} lang={other}>{other.toUpperCase()}<span class="visually-hidden"> — {t.langSwitch}</span></a>
+      <details class="lang-menu">
+        <summary class="lang-link" aria-label={`${t.langSwitch}: ${locales[lang].name}`}>{lang.toUpperCase()}</summary>
+        <ul>
+          {others.map((o) => <li><a href={o.href} hreflang={locales[o.l].html} lang={locales[o.l].html}><b>{o.l.toUpperCase()}</b>{locales[o.l].name}</a></li>)}
+        </ul>
+      </details>
       <a class="btn btn--primary" href={`${routes.tour[lang]}#reservar`}>{t.nav.book}</a>
-      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-nav" aria-label="Menú">
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-nav" aria-label={tx('Menú', 'Menu', 'Menu', 'Menu')}>
         <Icon name="menu" />
       </button>
     </div>
@@ -55,6 +61,9 @@ const items = [
     if (nav) nav.hidden = open;
     document.body.style.overflow = open ? '' : 'hidden';
   });
+  // El menú de idioma se cierra al tocar fuera de él
+  const langMenu = document.querySelector<HTMLDetailsElement>('.lang-menu');
+  document.addEventListener('click', (e) => { if (langMenu?.open && !langMenu.contains(e.target as Node)) langMenu.open = false; });
   nav?.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => {
     nav.hidden = true; btn?.setAttribute('aria-expanded', 'false'); document.body.style.overflow = '';
   }));

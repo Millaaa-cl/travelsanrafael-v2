@@ -11,29 +11,33 @@ import OtherTour from '../components/OtherTour.astro';
 import BookingWidget from '../components/BookingWidget.astro';
 import Icon from '../components/Icon.astro';
 import { content } from '../i18n/content';
-import { routes, type Lang } from '../i18n/routes';
+import { routes, pick, type Lang } from '../i18n/routes';
 import { tour, images, formatCLP } from '../data/tour';
 import { tourSchema, faqSchema, breadcrumbSchema } from '../lib/schema';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const t = content[lang];
-const es = lang === 'es';
+const tx = pick(lang);
 const price = formatCLP(tour.priceFromCLP);
-const name = es ? 'Tour Full Day Laguna San Rafael' : 'San Rafael Lagoon Full-Day Tour';
+const name = tx('Tour Full Day Laguna San Rafael', 'San Rafael Lagoon Full-Day Tour', 'Excursion d’une journée à la lagune San Rafael', 'Passeio de dia inteiro à Laguna San Rafael');
 const crumbs = [
-  { name: es ? 'Inicio' : 'Home', path: routes.home[lang] },
+  { name: tx('Inicio', 'Home', 'Accueil', 'Início'), path: routes.home[lang] },
   { name, path: routes.tour[lang] },
 ];
-const seo = es
-  ? { title: 'Tour Full Day Laguna San Rafael: precio, itinerario y reservas', description: `Itinerario, precio (${price} adulto, ${formatCLP(tour.priceChildCLP)} niño), qué incluye y fechas disponibles del tour en lancha rápida al Glaciar San Rafael. Reserva directa por WhatsApp.` }
-  : { title: 'San Rafael Lagoon Full-Day Tour: price, itinerary & booking', description: `Itinerary, price (${price} adult, ${formatCLP(tour.priceChildCLP)} child), inclusions and available dates for the speedboat tour to the San Rafael Glacier. Book direct on WhatsApp.` };
+const child = formatCLP(tour.priceChildCLP);
+const seo = tx(
+  { title: 'Tour Full Day Laguna San Rafael: precio, itinerario y reservas', description: `Itinerario, precio (${price} adulto, ${child} niño), qué incluye y fechas disponibles del tour en lancha rápida al Glaciar San Rafael. Reserva directa por WhatsApp.` },
+  { title: 'San Rafael Lagoon Full-Day Tour: price, itinerary & booking', description: `Itinerary, price (${price} adult, ${child} child), inclusions and available dates for the speedboat tour to the San Rafael Glacier. Book direct on WhatsApp.` },
+  { title: 'Excursion lagune San Rafael : prix, itinéraire et réservation', description: `Itinéraire, prix (${price} adulte, ${child} enfant), prestations incluses et dates de l’excursion en bateau rapide au glacier San Rafael. Réservation directe sur WhatsApp.` },
+  { title: 'Passeio à Laguna San Rafael: preço, roteiro e reservas', description: `Roteiro, preço (${price} adulto, ${child} criança), o que inclui e datas disponíveis do passeio de lancha rápida ao Glaciar San Rafael. Reserva direta pelo WhatsApp.` },
+);
 ---
 <Base lang={lang} title={seo.title} description={seo.description} routeKey="tour"
   schema={[...tourSchema(lang, t.answer.p, t.itinerary.steps), faqSchema(t.faq), breadcrumbSchema(crumbs)]}>
 
   <Hero lang={lang}
-    over={es ? 'Tour full day' : 'Full-day tour'}
+    over={tx('Tour full day', 'Full-day tour', 'Excursion d’une journée', 'Passeio de dia inteiro')}
     title="Laguna San Rafael"
     lead={t.hero.lead}
     crumbs={crumbs}
@@ -91,8 +95,8 @@ const seo = es
       </section>
 
       <section class="tour-block" aria-labelledby="h-practica">
-        <h2 id="h-practica">{es ? 'Información práctica' : 'Practical information'}</h2>
-        <p class="lead">{es ? 'Lo que necesitas saber antes del día del tour.' : 'What you need to know before tour day.'}</p>
+        <h2 id="h-practica">{tx('Información práctica', 'Practical information', 'Informations pratiques', 'Informações práticas')}</h2>
+        <p class="lead">{tx('Lo que necesitas saber antes del día del tour.', 'What you need to know before tour day.', 'Ce qu’il faut savoir avant le jour de l’excursion.', 'O que você precisa saber antes do dia do passeio.')}</p>
         <table class="facts">
           <caption class="visually-hidden">{t.facts.h}</caption>
           <tbody>{t.facts.rows.map(([k, v]) => <tr><th scope="row">{k}</th><td>{v}</td></tr>)}</tbody>
@@ -115,6 +119,6 @@ const seo = es
   </div>
 
   <Sections lang={lang} show={['parallax', 'gallery', 'reviews', 'faq', 'map']} />
-  <OtherTour lang={lang} to="kayak" heading={es ? 'Otros tours' : 'Other tours'} />
+  <OtherTour lang={lang} to="kayak" heading={tx('Otros tours', 'Other tours', 'Autres excursions', 'Outros passeios')} />
   <Sections lang={lang} show={['cta']} />
 </Base>

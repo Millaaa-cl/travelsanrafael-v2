@@ -39,7 +39,7 @@ export const tour = {
   currency: 'CLP',
   durationHours: 11,        // 06:20 → llegada entre 17:00 y 18:00
   capacity: 20,
-  season: { es: 'Septiembre a abril', en: 'September to April', fr: 'Septembre à avril', pt: 'Setembro a abril' }, // TODO: confirmar temporada
+  season: { es: 'Septiembre a marzo', en: 'September to March', fr: 'Septembre à mars', pt: 'Setembro a março' }, // confirmado por el cliente (23-11-2026): sin salidas de abril a agosto
   departureTime: '06:20',
   embarkKm: 90,             // km por tierra desde Puerto Río Tranquilo hasta el embarcadero (confirmado por el cliente)
   returnTime: { es: 'entre 17:00 y 18:00 hrs', en: 'between 5:00 and 6:00 pm', fr: 'entre 17 h et 18 h', pt: 'entre 17h e 18h' },
@@ -56,9 +56,9 @@ export const tour = {
   booking: {
     minDaysAhead: 1,                       // primer día reservable (1 = mañana)
     monthsAhead: 12,                       // meses que se pueden navegar desde el actual
-    seasonMonths: [9, 10, 11, 12, 1, 2, 3, 4], // meses con salidas (1 = enero); coincide con `season`
+    seasonMonths: [9, 10, 11, 12, 1, 2, 3], // meses con salidas (1 = enero); coincide con `season`
     weekdays: [0, 1, 2, 3, 4, 5, 6],       // días con salida (0 = domingo … 6 = sábado)
-    closed: [] as string[],                // fechas sin salida, formato 'AAAA-MM-DD'
+    closed: ['01-01'] as string[],         // fechas sin salida: 'AAAA-MM-DD' (una vez) o 'MM-DD' (todos los años)
   },
 };
 

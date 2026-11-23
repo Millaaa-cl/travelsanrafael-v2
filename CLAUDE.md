@@ -56,6 +56,8 @@ npm.cmd run package   # build + audit + costacarrera-v2-public_html.zip (usa `ta
   - el total usa `priceFromCLP` / `priceChildCLP`;
   - al enviar, arma el mensaje con `content.ts` → `booking.msg` y abre `https://wa.me/<business.whatsapp>?text=…` con `window.open`, sin `'noopener'` en las features (con él siempre devuelve `null`). Si la ventana se bloquea, navega en la misma pestaña.
   - No hay control de cupos: el operador confirma por chat, y las fechas llenas se agregan a `closed`.
+  - **Accesibilidad:** la grilla de días es `role="group"` con `aria-labelledby="cal-mes"` (el mes), y los nombres de los días de la semana llevan `aria-hidden`. No uses `role="grid"`: exige filas y celdas (`aria-required-children`), y PageSpeed, en "Navegación agéntica", marcaba "El árbol de accesibilidad no tiene el formato correcto".
+- **Accesibilidad para agentes (PageSpeed → Navegación agéntica):** para revisarla en local, Lighthouse 13.6 con la configuración agentic, contra `astro preview`. Desde el 20-11-2026 pasa en los 4 idiomas. En los botones con texto visible, el nombre accesible debe contener ese texto (`label-content-name-mismatch`). Por eso el selector de idioma usa el texto visible más un `<span class="visually-hidden">` en lugar de `aria-label`.
 - **Kayak Capillas de Mármol** (segundo servicio): datos en `tour.ts` → `kayak` (precio por persona, igual para adultos y niños; salida a 5 km del pueblo), textos ES/EN/FR/PT en `src/i18n/kayak.ts`, vista `src/views/KayakView.astro` (ruta `kayak` en `routes.ts`) y JSON-LD con `kayakSchema()`. Se reserva solo por WhatsApp: la tarjeta lateral `.kayak-book` reusa el marco de `.booking`, sin calendario. Sus fotos están en `tour.ts` → `kayakImages` (hero de `PageHero`, galería de 3 con lightbox, imagen OG e `image` del JSON-LD); la primera de la galería se reusa en la promo de la home (`.kayak-promo`) y en la tarjeta "Otros tours" (`OtherTour.astro`). `WhatsAppFab` recibe `service` desde `Base` (según `routeKey`) para mostrar el precio del kayak en la barra móvil. Los datos sin confirmar están marcados con `TODO`.
 - **Google Tag Manager** (`GTM-5QG5Q92C`, en `business.gtmId` de `tour.ts`): `Base.astro` inserta el snippet oficial al inicio del `<head>` y el `<noscript>` al inicio del `<body>` en todas las páginas. Las etiquetas (GA4, etc.) se configuran en el panel de GTM, no en el código. Con `gtmId` vacío se desactiva.
 - `public/.htaccess` fuerza HTTPS y el dominio sin www, redirige con 301 las URLs del WordPress antiguo (`/itinerario`, `/cart`, …) y bloquea archivos ocultos.
@@ -65,10 +67,11 @@ npm.cmd run package   # build + audit + costacarrera-v2-public_html.zip (usa `ta
 ## Datos del tour (confirmados por el cliente)
 
 - **Precios (desde el 19-11-2026):** $190.000 CLP por adulto y $120.000 CLP por niño de hasta 12 años, **con transporte incluido** para todos (`priceFromCLP`, `priceChildCLP` y `childMaxAge` en `tour.ts`; en la v2 son también los del total del widget). El sitio dice "por adulto", no "por persona".
+- **Temporada (desde el 23-11-2026):** de septiembre a marzo, sin salidas de abril a agosto (`seasonMonths`), y el 1 de enero cerrado todos los años (`closed: ['01-01']`; `closed` acepta `'AAAA-MM-DD'` para una fecha o `'MM-DD'` para todos los años).
 - **Horario:** salida a las 06:20 desde la esquina de Dagoberto Godoy con Exploradores (Puerto Río Tranquilo); regreso entre las 17:00 y las 18:00.
 - **Itinerario:** 2 h de bus, 2 h de navegación con desayuno, 1 h frente al glaciar con degustación de whisky con hielo milenario, pisco sour o jugo, almuerzo y navegación de retorno con snack, y regreso por tierra. **El precio incluye el transporte**: bus de ida y vuelta desde Puerto Río Tranquilo (antes era opcional; se quitó la casilla del widget).
 
-Los valores que quedan pendientes están marcados con `TODO` en el código: temporada, entrada a CONAF, coordenadas, redes sociales y razón social.
+Los valores que quedan pendientes están marcados con `TODO` en el código: temporada del kayak, entrada a CONAF, coordenadas, redes sociales y razón social.
 
 ## Imágenes
 

@@ -110,7 +110,7 @@ const i18n = {
     const maxMonth = addMonth(minMonth, cfg.monthsAhead - 1);
     const closed = new Set(cfg.closed);
     const isOpen = (d: Date) =>
-      d >= first && cfg.seasonMonths.includes(d.getMonth() + 1) && cfg.weekdays.includes(d.getDay()) && !closed.has(iso(d));
+      d >= first && cfg.seasonMonths.includes(d.getMonth() + 1) && cfg.weekdays.includes(d.getDay()) && !closed.has(iso(d)) && !closed.has(iso(d).slice(5));
     const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
     const longDate = (s: string) => cap(new Date(s + 'T12:00:00').toLocaleDateString(T.locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }));
 
